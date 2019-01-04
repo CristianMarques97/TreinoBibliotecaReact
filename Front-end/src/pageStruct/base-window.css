@@ -1,0 +1,43 @@
+.drawerOptions {
+margin: 0px;
+width: 100%;
+}
+
+#root {
+    height: 100vh;
+}
+
+#root div {
+    height: 100%;
+}
+
+.pagecontent {
+    background-color: aqua;
+}
+
+.drawerUserInfo {
+    width: 100%;
+    margin: 0px;
+    margin-left: -10px;
+    padding: 10px; 
+}
+
+#infoUserName {
+    text-align: center;
+}
+
+.drawerUserInfo span {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-left: -10px;
+
+}
+
+
+footer {
+    text-align: center;
+    width: 100%;
+}
+
+
