@@ -1,13 +1,13 @@
-package com.biblioteca.managerService;
+package com.managerServices.biblioteca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ManagerServiceApplication {
+public class BibliotecaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ManagerServiceApplication.class, args);
+		SpringApplication.run(BibliotecaApplication.class, args);
 	}
 
 }
