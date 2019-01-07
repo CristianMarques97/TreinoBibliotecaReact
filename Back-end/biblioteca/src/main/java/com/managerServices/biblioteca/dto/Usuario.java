@@ -3,9 +3,13 @@ package com.managerServices.biblioteca.dto;
 import java.io.Serializable;
 import java.sql.Date;
 
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@Entity
+
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuario implements Serializable {
 	
 	/**
