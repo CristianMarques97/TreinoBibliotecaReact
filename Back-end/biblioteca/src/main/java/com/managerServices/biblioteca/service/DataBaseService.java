@@ -11,7 +11,7 @@ public class DataBaseService {
 	@Autowired
 	private DataBaseDao dao;
 	
-	public boolean createUser(Usuario user) {
+	public boolean createUser(Usuario user) throws Exception {
 		return dao.createNewUser(user);
 		
 	}

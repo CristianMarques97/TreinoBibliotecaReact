@@ -1,5 +1,10 @@
 package com.managerServices.biblioteca.dao;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,13 +18,15 @@ public class DataBaseDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public boolean createNewUser(Usuario user) {
+	public boolean createNewUser(Usuario user) throws Exception {
 		try {
-			CreateUserSP sp = new CreateUserSP(jdbcTemplate.getDataSource());
-			sp.execute(user);
+//			CreateUserSP sp = new CreateUserSP(jdbcTemplate.getDataSource());
+//			sp.execute(user);
+
 			return true;
 		} catch (Exception e) {
-			return false;
+			throw e;
 		}
 	}
+	
 }

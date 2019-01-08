@@ -3,13 +3,16 @@ package com.managerServices.biblioteca.dto;
 import java.io.Serializable;
 import java.sql.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.springframework.stereotype.Repository;
 
 
-@JsonInclude(Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
+@Entity
 public class Usuario implements Serializable {
 	
 	/**
@@ -17,13 +20,15 @@ public class Usuario implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@Id
+	private int id;
+	
 	private String nome;
 	private String sobrenome;
 	private Date dataNasc;
 	private String email;
 	private String senha;
 	
-	private int id;
 	public int getId() {
 		return id;
 	}
