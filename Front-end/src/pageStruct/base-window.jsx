@@ -609,19 +609,18 @@ class BaseWindow extends Component {
     }
 
     // busca na base de dados
-  let data = {email: email, senha: password}
-    const conteudo = fetch('http://localhost:8080/library/user/manager/login/', {
-      method: 'GET',
-      body: JSON.stringify(data,null,2),
-      headers: {
-        'content-type': 'application/json'
-      }
-    })
-    .then(Response => {
-      if(!Response.ok) {
-        console.log("Problema na rede");
-      }
-    })
+    const conteudo =  fetch('http://localhost:8080/library/user/manager/login/', {
+      method: 'POST',
+      credentials: "include",
+  headers: {
+    'Content-Type': 'application/json',
+  },
+mode : "cors",
+  body:  JSON.stringify({
+    email: email.value,
+    senha: password.value,
+  })
+})
     
     console.log(conteudo);
     
