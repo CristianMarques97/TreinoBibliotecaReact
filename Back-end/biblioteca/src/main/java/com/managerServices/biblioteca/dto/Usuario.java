@@ -3,16 +3,16 @@ package com.managerServices.biblioteca.dto;
 import java.io.Serializable;
 import java.sql.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.springframework.stereotype.Repository;
-
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name="clientes")
 public class Usuario implements Serializable {
 	
 	/**
@@ -21,12 +21,22 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int id;
 	
+	@Column(columnDefinition = "text")
 	private String nome;
+	
+	@Column(columnDefinition = "text")
 	private String sobrenome;
-	private Date dataNasc;
+	
+	@Column(columnDefinition = "date")
+	private Date datanasc;
+	
+	@Column(unique = true, columnDefinition = "text")
 	private String email;
+	
+	@Column(columnDefinition = "text")
 	private String senha;
 	
 	public int getId() {
@@ -50,10 +60,10 @@ public class Usuario implements Serializable {
 		this.sobrenome = sobrenome;
 	}
 	public Date getDataNasc() {
-		return dataNasc;
+		return datanasc;
 	}
 	public void setDataNasc(Date dataNasc) {
-		this.dataNasc = dataNasc;
+		this.datanasc = dataNasc;
 	}
 	public String getEmail() {
 		return email;

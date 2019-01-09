@@ -6,5 +6,5 @@ import com.managerServices.biblioteca.dto.Usuario;
 
 public interface UserRepository extends JpaRepository<Usuario, Integer>{
 	
-	
+	public Usuario findByEmailAndSenha(String mail,String senha);
 }

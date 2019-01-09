@@ -1,5 +1,4 @@
 import "./base-window.css";
-import Database from "../user-database";
 import MyProfile from "../user-profile/my-profile";
 import UnauthHome from "../apresentation/unauth-home";
 import BottomNavigation from './Bottom-navigation';
@@ -180,8 +179,6 @@ const styles = theme => ({
 class BaseWindow extends Component {
   history = createHashHistory();
   // propiedades
-  baseDeDados = new Database();
-  static usuarioLogado;
   livrosAlugados = 0;
   qtdeAlert = 0;
   bemvindo = "";
@@ -200,7 +197,8 @@ class BaseWindow extends Component {
       openLoginErrorDialog: false,
       emptyForm: false,
       emptyFormPass: false,
-      openLogoffDialog: false
+      openLogoffDialog: false,
+      usuarioAtivo: null,
     };
 
     if (!this.state.auth) this.history.replace("/");
@@ -588,6 +586,7 @@ class BaseWindow extends Component {
     let email = document.getElementById("userName");
     let password = document.getElementById("userPassword");
     let userFound = false;
+    
 
     // valida campos vazios
     if (
@@ -609,38 +608,60 @@ class BaseWindow extends Component {
       return;
     }
 
-    for (let i = 0; i < Database.lstClientes.length; i++) {
-      const iCliente = Database.lstClientes[i];
-      console.log(iCliente);
-      if (iCliente.email === email.value && iCliente.senha === password.value) {
-        userFound = true;
-        BaseWindow.usuarioLogado = iCliente;
-
-        this.setState({
-          auth: !this.state.auth
-        });
-        this.handleClose();
-        this.usernameAvatar =
-          BaseWindow.usuarioLogado.nome[0] +
-          BaseWindow.usuarioLogado.sobrenome[0];
-        console.log(this.usernameAvatar);
-
-        this.bemvindo =
-          "Bem Vindo: " +
-          BaseWindow.usuarioLogado.nome +
-          " " +
-          BaseWindow.usuarioLogado.sobrenome;
-        this.handleDialogOpen();
+    // busca na base de dados
+  let data = {email: email, senha: password}
+    const conteudo = fetch('http://localhost:8080/library/user/manager/login/', {
+      method: 'GET',
+      body: JSON.stringify(data,null,2),
+      headers: {
+        'content-type': 'application/json'
       }
-    }
-    if (!userFound) {
-      email.value = "";
-      password.value = "";
-      this.handleErrorDialogOpen();
-    }
+    })
+    .then(Response => {
+      if(!Response.ok) {
+        console.log("Problema na rede");
+      }
+    })
+    
+    console.log(conteudo);
+    
 
-    this.history.replace("/home");
+
+
+
+
+    console.log(this.state.usuarioAtivo);
+    
+    
+    //     this.setState({
+    //       auth: !this.state.auth
+    //     });
+
+    //     this.handleClose();
+    //     this.usernameAvatar =
+    //       BaseWindow.usuarioLogado.nome[0] +
+    //       BaseWindow.usuarioLogado.sobrenome[0];
+    //     console.log(this.usernameAvatar);
+
+    //     this.bemvindo =
+    //       "Bem Vindo: " +
+    //       BaseWindow.usuarioLogado.nome +
+    //       " " +
+    //       BaseWindow.usuarioLogado.sobrenome;
+    //     this.handleDialogOpen();
+      
+    
+
+    // // não encontrou usuário
+    // if (!userFound) {
+    //   email.value = "";
+    //   password.value = "";
+    //   this.handleErrorDialogOpen();
+    // }
+
+    // this.history.replace("/home");
   }
+
 
   navigate(url) {
     this.history.replace(url);
