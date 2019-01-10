@@ -1,7 +1,7 @@
 import "./base-window.css";
 import MyProfile from "../user-profile/my-profile";
 import UnauthHome from "../apresentation/unauth-home";
-import BottomNavigation from './Bottom-navigation';
+import BottomNavigation from "./Bottom-navigation";
 
 import classNames from "classnames";
 import React, { Component } from "react";
@@ -161,17 +161,16 @@ const styles = theme => ({
   },
 
   pageContent: {
-
     width: "100%",
     backgroundColor: "crimsom",
-    alignItems: 'end',
-    height: "100%",
+    alignItems: "end",
+    height: "100%"
   },
 
   botttomNavigation: {
     height: "25%",
-    width: "100%",
-  },
+    width: "100%"
+  }
 });
 
 /************************************************************************************************/
@@ -183,11 +182,12 @@ class BaseWindow extends Component {
   qtdeAlert = 0;
   bemvindo = "";
   usernameAvatar = "";
-
   constructor(props) {
     super(props);
 
     this.state = {
+      email: "",
+      password: "",
       anchorEl: null,
       open: false,
       mobileMoreAnchorEl: null,
@@ -199,6 +199,8 @@ class BaseWindow extends Component {
       emptyFormPass: false,
       openLogoffDialog: false,
       usuarioAtivo: null,
+      activeUser: null,
+      errorMessage: ""
     };
 
     if (!this.state.auth) this.history.replace("/");
@@ -451,10 +453,12 @@ class BaseWindow extends Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title"> Dados Incorretos</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            Erro Ao Tentar Realizar log-in
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Ops: Os Dados estão incorretos, Tente novamente.
+              {this.state.errorMessage}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -476,9 +480,9 @@ class BaseWindow extends Component {
                   {this.usernameAvatar}
                 </Avatar>
                 <span id="infoUserName">
-                  {BaseWindow.usuarioLogado.nome +
+                  {/* {BaseWindow.usuarioLogado.nome +
                     " " +
-                    BaseWindow.usuarioLogado.sobrenome}
+                    BaseWindow.usuarioLogado.sobrenome} */}
                 </span>
               </div>
               <div className="drawerOptions">
@@ -507,7 +511,12 @@ class BaseWindow extends Component {
                 label="Email:"
                 className={classes.textField}
                 type="email"
-                onChange={() => this.setState({ emptyForm: false })}
+                onChange={event => {
+                  this.setState({
+                    emptyForm: false,
+                    email: event.target.value
+                  });
+                }}
                 margin="normal"
                 placeholder="username@example.com"
                 onKeyPress={event => {
@@ -525,7 +534,12 @@ class BaseWindow extends Component {
                 className={classes.textField}
                 // value={""}
                 type="password"
-                onChange={() => this.setState({ emptyFormPass: false })}
+                onChange={event => {
+                  this.setState({
+                    emptyFormPass: false,
+                    password: event.target.value
+                  });
+                }}
                 margin="normal"
                 onKeyPress={event => {
                   if (event.key === "Enter") {
@@ -553,29 +567,28 @@ class BaseWindow extends Component {
         </Drawer>
 
         {/* Conteudo abaixo do AppBar */}
-        <div className= {classes.pageContent}>
-        {!this.state.auth && (
-          <Router basename="/#">
-            <Switch>
-              <Route exact path="/" component={UnauthHome} />
-              <Route path="*" component={PageNotFound} />
-            </Switch>
-          </Router>
-        )}
-        {this.state.auth && (
-          <Router basename="/#">
-            <Switch>
-              <Route exact path="/" component={UnauthHome} />
-              <Route path="/home" component={MyProfile} />
-              <Route path="*" component={PageNotFound} />
-            </Switch>
-          </Router>
-        )}
-</div>
-          <Divider/>
+        <div className={classes.pageContent}>
+          {!this.state.auth && (
+            <Router basename="/#">
+              <Switch>
+                <Route exact path="/" component={UnauthHome} />
+                <Route path="*" component={PageNotFound} />
+              </Switch>
+            </Router>
+          )}
+          {this.state.auth && (
+            <Router basename="/#">
+              <Switch>
+                <Route exact path="/" component={UnauthHome} />
+                <Route path="/home" component={MyProfile} />
+                <Route path="*" component={PageNotFound} />
+              </Switch>
+            </Router>
+          )}
+        </div>
+        <Divider />
 
-          <BottomNavigation className ={classes.botttomNavigation}/>
-
+        <BottomNavigation className={classes.botttomNavigation} />
       </div>
     );
   }
@@ -583,24 +596,21 @@ class BaseWindow extends Component {
   // actions
 
   login() {
-    let email = document.getElementById("userName");
-    let password = document.getElementById("userPassword");
     let userFound = false;
-    
 
     // valida campos vazios
     if (
-      email.value === null ||
-      email.value === "" ||
-      password.value === null ||
-      password.value === ""
+      this.state.email === null ||
+      this.state.email === "" ||
+      this.state.password === null ||
+      this.state.password === ""
     ) {
-      if (email.value === null || email.value === "") {
+      if (this.state.email === null || this.state.email === "") {
         this.setState({
           emptyForm: true
         });
       }
-      if (password.value === null || password.value === "") {
+      if (this.state.password === null || this.state.password === "") {
         this.setState({
           emptyFormPass: true
         });
@@ -609,67 +619,72 @@ class BaseWindow extends Component {
     }
 
     // busca na base de dados
-    const conteudo =  fetch('http://localhost:8080/library/user/manager/login/', {
-      method: 'POST',
-      credentials: "include",
-  headers: {
-    'Content-Type': 'application/json',
-  },
-mode : "cors",
-  body:  JSON.stringify({
-    email: email.value,
-    senha: password.value,
-  })
-})
-    
-    console.log(conteudo);
-    
+    let conteudo = null;
 
+    fetch("http://localhost:8080/library/user/manager/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        email: this.state.email,
+        senha: this.state.password
+      })
+    })
+      .then(Response => {
+        return Response.json();
+      })
+      .then(jsonResponse => {
+        conteudo = jsonResponse;
 
+        this.setState({
+          auth: !this.state.auth,
+          activeUser: conteudo
+        });
+        this.handleClose();
+        this.usernameAvatar =
+          this.state.activeUser.nome[0] + this.state.activeUser.sobrenome[0];
 
+        console.log(this.usernameAvatar);
+        console.log(this.state.activeUser);
 
+        this.bemvindo =
+          "Bem Vindo: " +
+          this.state.activeUser.nome +
+          " " +
+          this.state.activeUser.sobrenome;
+        this.handleDialogOpen();
+        this.history.replace("/home");
+      })
+      .catch(error => {
+        let errorMsg = "";
+        if (error == "TypeError: Failed to fetch")
+          errorMsg = "Erro No servidor tente novamente mais tarde";
+        else if (error == "SyntaxError: Unexpected end of JSON input") {
+          errorMsg = "e-mail ou senha inválidos";
+        }
+        this.setState({
+          email: "",
+          password: "",
+          errorMessage: errorMsg
+        });
+        document.getElementById("userName").value = "";
+        document.getElementById("userPassword").value = "";
 
-    console.log(this.state.usuarioAtivo);
-    
-    
-    //     this.setState({
-    //       auth: !this.state.auth
-    //     });
-
-    //     this.handleClose();
-    //     this.usernameAvatar =
-    //       BaseWindow.usuarioLogado.nome[0] +
-    //       BaseWindow.usuarioLogado.sobrenome[0];
-    //     console.log(this.usernameAvatar);
-
-    //     this.bemvindo =
-    //       "Bem Vindo: " +
-    //       BaseWindow.usuarioLogado.nome +
-    //       " " +
-    //       BaseWindow.usuarioLogado.sobrenome;
-    //     this.handleDialogOpen();
-      
-    
-
-    // // não encontrou usuário
-    // if (!userFound) {
-    //   email.value = "";
-    //   password.value = "";
-    //   this.handleErrorDialogOpen();
-    // }
-
-    // this.history.replace("/home");
+        this.handleErrorDialogOpen();
+      });
   }
-
 
   navigate(url) {
     this.history.replace(url);
   }
 
   logoff() {
-    BaseWindow.usuarioLogado = null;
+    
     this.setState({
-      auth: !this.state.auth
+      auth: !this.state.auth,
+      usuarioAtivo: null,
     });
 
     this.handleLogoffDialogClose();

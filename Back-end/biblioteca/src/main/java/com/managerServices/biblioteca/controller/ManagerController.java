@@ -6,10 +6,12 @@ import java.util.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.managerServices.biblioteca.dao.repository.UserRepository;
@@ -34,8 +36,8 @@ public class ManagerController {
 		return repo.save(user);
 	}
 	
-
-@GetMapping("/user/manager/login")
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST})
+@PostMapping("/user/manager/login")
 public Usuario login(@RequestBody LoginRequest request) {
 	return repo.findByEmailAndSenha(request.getEmail(), request.getSenha());
 	
