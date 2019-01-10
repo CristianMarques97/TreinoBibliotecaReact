@@ -3,6 +3,10 @@ margin: 0px;
 width: 100%;
 }
 
+#btnCadastrar {
+    margin-left: 12%;
+}
+
 #root {
     height: 100vh;
 }

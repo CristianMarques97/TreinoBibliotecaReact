@@ -32,6 +32,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 
+import Add from "@material-ui/icons/Add";
 import Book from "@material-ui/icons/Book";
 import MenuIcon from "@material-ui/icons/Menu";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -186,21 +187,42 @@ class BaseWindow extends Component {
     super(props);
 
     this.state = {
+      // login form
       email: "",
       password: "",
-      anchorEl: null,
-      open: false,
-      mobileMoreAnchorEl: null,
-      drawerOpen: false,
-      auth: false,
-      openLoginDialog: false,
-      openLoginErrorDialog: false,
       emptyForm: false,
       emptyFormPass: false,
-      openLogoffDialog: false,
       usuarioAtivo: null,
       activeUser: null,
-      errorMessage: ""
+      errorMessage: "",
+
+      //create Account form
+      newEmail: "",
+      newNome: "",
+      newSobrenome: "",
+      newDataNasc: "",
+      newSenha: "",
+      newSenhaConfirm: "",
+
+      emptyCreateFormEmail: false,
+      emptyCreateFormNome: false,
+      emptyCreateFormSobrenome: false,
+      emptyCreateFormDataNasc: false,
+      emptyCreateFormSenha: false,
+      emptyCreateFormSenhaConfirm: false,
+
+      //
+      anchorEl: null,
+      mobileMoreAnchorEl: null,
+      // drawer control
+      open: false,
+      drawerOpen: false,
+      auth: false,
+      // dialog control
+      openLoginDialog: false,
+      openLoginErrorDialog: false,
+      openLogoffDialog: false,
+      createDialogOpen: false
     };
 
     if (!this.state.auth) this.history.replace("/");
@@ -210,6 +232,10 @@ class BaseWindow extends Component {
   }
 
   // handlers
+
+  handleCreateDialogOpen = () => {
+    this.setState({ createDialogOpen: !this.state.createDialogOpen });
+  };
 
   handleDialogOpen = () => {
     this.setState({ openLoginDialog: !this.state.openLoginDialog });
@@ -336,7 +362,7 @@ class BaseWindow extends Component {
               color="inherit"
               noWrap
             >
-              Material-UI
+              Biblioteca - Controle de empréstimos e dados cadastrais
             </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -468,6 +494,122 @@ class BaseWindow extends Component {
           </DialogActions>
         </Dialog>
 
+        <Dialog
+          open={this.state.createDialogOpen}
+          onClose={this.limparCampos}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Cadastrar-se</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Insira o seus dados para criar o cadastro
+            </DialogContentText>
+            <TextField
+              error={this.state.emptyCreateFormEmail}
+              autoFocus
+              value={this.state.newEmail}
+              margin="dense"
+              id="crateEmail"
+              label="Email Address"
+              type="email"
+              placeholder="username@example.com"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormEmail: false,
+                  newEmail: event.target.value
+                });
+              }}
+            />
+
+            <br />
+            <TextField
+              error={this.state.emptyCreateFormNome}
+              value={this.state.newNome}
+              margin="dense"
+              id="createNome"
+              label="Nome"
+              type="text"
+              placeholder="Diddy"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormNome: false,
+                  newNome: event.target.value
+                });
+              }}
+            />
+            <br />
+            <TextField
+              error={this.state.emptyCreateFormSobrenome}
+              value={this.state.newSobrenome}
+              margin="dense"
+              id="createSobrenome"
+              label="Sobrenome"
+              type="text"
+              placeholder="Kong"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormSobrenome: false,
+                  newSobrenome: event.target.value
+                });
+              }}
+            />
+            <br />
+            <TextField
+              error={this.state.emptyCreateFormDataNasc}
+              value={this.state.newDataNasc}
+              margin="dense"
+              InputLabelProps={{ shrink: true }}
+              id="createDataNasc"
+              label="Data de Nascimento"
+              type="date"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormDataNasc: false,
+                  newDataNasc: event.target.value
+                });
+              }}
+            />
+            <br />
+            <TextField
+              error={this.state.emptyCreateFormSenha}
+              value={this.state.newSenha}
+              margin="dense"
+              id="createSenha"
+              label="Senha"
+              type="password"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormSenha: false,
+                  newSenha: event.target.value
+                });
+              }}
+            />
+            <br />
+            <TextField
+              error={this.state.emptyCreateFormSenhaConfirm}
+              value={this.state.newSenhaConfirm}
+              margin="dense"
+              id="createSenhaConfirm"
+              label="Confirmar Senha"
+              type="password"
+              onChange={event => {
+                this.setState({
+                  emptyCreateFormSenhaConfirm: false,
+                  newSenhaConfirm: event.target.value
+                });
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.limparCampos()} color="primary">
+              Cancelar
+            </Button>
+            <Button onClick={() => this.cadastrar()} color="primary">
+              Subscribe
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/* Menu lateral */}
         <Drawer docked="false" width={200} open={this.state.open}>
           <MenuItem onClick={this.handleClose}>
@@ -509,6 +651,7 @@ class BaseWindow extends Component {
                 error={this.state.emptyForm}
                 id="userName"
                 label="Email:"
+                value={this.state.email}
                 className={classes.textField}
                 type="email"
                 onChange={event => {
@@ -532,7 +675,7 @@ class BaseWindow extends Component {
                 id="userPassword"
                 label="Senha:"
                 className={classes.textField}
-                // value={""}
+                value={this.state.password}
                 type="password"
                 onChange={event => {
                   this.setState({
@@ -562,6 +705,18 @@ class BaseWindow extends Component {
 
               <br />
               <Divider className={classes.avatarDiv} />
+
+              <Button
+                id="btnCadastrar"
+                variant="contained"
+                size="medium"
+                onClick={this.handleCreateDialogOpen}
+              >
+                <Add
+                  className={classNames(classes.leftIcon, classes.iconSmall)}
+                />
+                Cadastrar-se
+              </Button>
             </div>
           )}
         </Drawer>
@@ -667,8 +822,6 @@ class BaseWindow extends Component {
           password: "",
           errorMessage: errorMsg
         });
-        document.getElementById("userName").value = "";
-        document.getElementById("userPassword").value = "";
 
         this.handleErrorDialogOpen();
       });
@@ -679,10 +832,9 @@ class BaseWindow extends Component {
   }
 
   logoff() {
-    
     this.setState({
       auth: !this.state.auth,
-      usuarioAtivo: null,
+      usuarioAtivo: null
     });
 
     this.handleLogoffDialogClose();
@@ -690,6 +842,74 @@ class BaseWindow extends Component {
     this.usernameAvatar = "";
 
     this.history.replace("/");
+  }
+
+  limparCampos() {
+    this.setState({
+      newEmail: "",
+      newNome: "",
+      newSobrenome: "",
+      newDataNasc: "",
+      newSenha: "",
+      newSenhaConfirm: ""
+    });
+    this.handleCreateDialogOpen();
+  }
+  cadastrar() {
+    // valida os campos
+    if (this.state.newEmail === null || this.state.newEmail === "") {
+      this.setState({
+        emptyCreateFormEmail: true
+      });
+    }
+    if (this.state.newNome === null || this.state.newNome === "") {
+      this.setState({
+        emptyCreateFormNome: true
+      });
+    }
+
+    if (this.state.newSobrenome === null || this.state.newSobrenome === "") {
+      this.setState({
+        emptyCreateFormSobrenome: true
+      });
+    }
+
+    if (this.state.newDataNasc === null || this.state.newDataNasc === "") {
+      this.setState({
+        emptyCreateFormDataNasc: true
+      });
+    }
+
+    if (this.state.newSenha === null || this.state.newSenha === "") {
+      this.setState({
+        emptyCreateFormSenha: true
+      });
+    }
+
+    if (this.state.newSenhaConfirm === null || this.state.newSenhaConfirm === "") {
+      this.setState({
+        emptyCreateFormSenhaConfirm: true
+      });
+    }
+
+    if (
+      !this.state.emptyCreateFormEmail ||
+      !this.state.emptyCreateFormNome ||
+      !this.state.emptyCreateFormSobrenome ||
+      !this.state.emptyCreateFormDataNasc ||
+      !this.state.emptyCreateFormSenha ||
+      !this.state.emptyCreateFormSenhaConfirm
+    ) {
+      return;
+    }
+
+    else {
+    console.log("Passou");
+
+    this.handleCreateDialogOpen();
+
+    return;
+    }
   }
 }
 
