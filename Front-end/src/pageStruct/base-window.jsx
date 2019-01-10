@@ -596,8 +596,6 @@ class BaseWindow extends Component {
   // actions
 
   login() {
-    let userFound = false;
-
     // valida campos vazios
     if (
       this.state.email === null ||
@@ -659,9 +657,9 @@ class BaseWindow extends Component {
       })
       .catch(error => {
         let errorMsg = "";
-        if (error == "TypeError: Failed to fetch")
+        if (error === "TypeError: Failed to fetch")
           errorMsg = "Erro No servidor tente novamente mais tarde";
-        else if (error == "SyntaxError: Unexpected end of JSON input") {
+        else if (error === "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
         }
         this.setState({
