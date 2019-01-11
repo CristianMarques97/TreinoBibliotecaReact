@@ -496,7 +496,7 @@ class BaseWindow extends Component {
 
         <Dialog
           open={this.state.createDialogOpen}
-          onClose={this.limparCampos}
+          onClose={() => this.limparCampos()}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Cadastrar-se</DialogTitle>
@@ -796,25 +796,14 @@ class BaseWindow extends Component {
           activeUser: conteudo
         });
         this.handleClose();
-        this.usernameAvatar =
-          this.state.activeUser.nome[0] + this.state.activeUser.sobrenome[0];
-
-        console.log(this.usernameAvatar);
-        console.log(this.state.activeUser);
-
-        this.bemvindo =
-          "Bem Vindo: " +
-          this.state.activeUser.nome +
-          " " +
-          this.state.activeUser.sobrenome;
-        this.handleDialogOpen();
-        this.history.replace("/home");
+        this.setActiveUser();
+    
       })
       .catch(error => {
         let errorMsg = "";
-        if (error === "TypeError: Failed to fetch")
+        if (error == "TypeError: Failed to fetch")
           errorMsg = "Erro No servidor tente novamente mais tarde";
-        else if (error === "SyntaxError: Unexpected end of JSON input") {
+        else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
         }
         this.setState({
@@ -827,9 +816,21 @@ class BaseWindow extends Component {
       });
   }
 
-  navigate(url) {
-    this.history.replace(url);
-  }
+ setActiveUser() {
+  this.usernameAvatar =
+  this.state.activeUser.nome[0] + this.state.activeUser.sobrenome[0];
+
+console.log(this.usernameAvatar);
+console.log(this.state.activeUser);
+
+this.bemvindo =
+  "Bem Vindo: " +
+  this.state.activeUser.nome +
+  " " +
+  this.state.activeUser.sobrenome;
+this.handleDialogOpen();
+this.history.replace("/home");
+ }
 
   logoff() {
     this.setState({
@@ -856,56 +857,116 @@ class BaseWindow extends Component {
     this.handleCreateDialogOpen();
   }
   cadastrar() {
+    let validate = false;
     // valida os campos
     if (this.state.newEmail === null || this.state.newEmail === "") {
       this.setState({
         emptyCreateFormEmail: true
       });
+      validate = true;
     }
     if (this.state.newNome === null || this.state.newNome === "") {
       this.setState({
         emptyCreateFormNome: true
       });
+      validate = true;
     }
 
     if (this.state.newSobrenome === null || this.state.newSobrenome === "") {
       this.setState({
         emptyCreateFormSobrenome: true
       });
+      validate = true;
     }
 
     if (this.state.newDataNasc === null || this.state.newDataNasc === "") {
       this.setState({
         emptyCreateFormDataNasc: true
       });
+      validate = true;
     }
 
     if (this.state.newSenha === null || this.state.newSenha === "") {
       this.setState({
         emptyCreateFormSenha: true
       });
+      validate = true;
     }
 
     if (this.state.newSenhaConfirm === null || this.state.newSenhaConfirm === "") {
       this.setState({
         emptyCreateFormSenhaConfirm: true
       });
+      validate = true;
     }
 
-    if (
-      !this.state.emptyCreateFormEmail ||
-      !this.state.emptyCreateFormNome ||
-      !this.state.emptyCreateFormSobrenome ||
-      !this.state.emptyCreateFormDataNasc ||
-      !this.state.emptyCreateFormSenha ||
-      !this.state.emptyCreateFormSenhaConfirm
-    ) {
+    if(this.state.newSenha != this.state.newSenhaConfirm) {
+      this.setState({
+      emptyCreateFormSenha: true,
+      emptyCreateFormSenhaConfirm: true,
+      });
+      validate = true;
+    }
+
+    if (validate) {      
       return;
     }
 
     else {
-    console.log("Passou");
 
+      if(this.state.emptyCreateFormSenha && this.state.emptyCreateFormSenhaConfirm) {
+        this.setState({
+          emptyCreateFormSenha: false,
+          emptyCreateFormSenhaConfirm: false,
+          });
+      }
+
+      let conteudo = null;
+
+      fetch("http://localhost:8080/library/user/manager/new/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          nome : this.state.newNome,
+	        sobrenome : this.state.newSobrenome,
+	        dataNasc : this.state.newDataNasc,
+	        email : this.state.newEmail,
+	        senha : this.state.newSenha,
+        })
+      })
+        .then(Response => {
+          return Response.json();
+        })
+        .then(jsonResponse => {
+          conteudo = jsonResponse;
+  
+          this.setState({
+            auth: !this.state.auth,
+            activeUser: conteudo
+          });
+          this.handleCreateDialogOpen();
+          this.limparCampos();
+          this.setActiveUser();
+      
+        })
+        .catch(error => {
+          let errorMsg = "";
+          if (error == "TypeError: Failed to fetch")
+            errorMsg = "Erro No servidor tente novamente mais tarde";
+          else if (error == "SyntaxError: Unexpected end of JSON input") {
+            errorMsg = "e-mail ou senha inválidos";
+          }
+          this.setState({
+            email: "",
+            password: "",
+            errorMessage: errorMsg
+          });
+  
+          this.handleErrorDialogOpen();
+        });
     this.handleCreateDialogOpen();
 
     return;

@@ -30,6 +30,7 @@ public class ManagerController {
 	@Autowired
 	private UserRepository repo;
 	
+	@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST})
 	@PostMapping("/user/manager/new")
 	public Usuario createNewUser(@RequestBody Usuario user) {
 		log.info("Request: {}", "New User");
