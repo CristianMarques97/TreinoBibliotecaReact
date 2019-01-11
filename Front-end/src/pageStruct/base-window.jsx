@@ -605,7 +605,7 @@ class BaseWindow extends Component {
               Cancelar
             </Button>
             <Button onClick={() => this.cadastrar()} color="primary">
-              Subscribe
+              Cadastrar
             </Button>
           </DialogActions>
         </Dialog>
@@ -793,7 +793,9 @@ class BaseWindow extends Component {
 
         this.setState({
           auth: !this.state.auth,
-          activeUser: conteudo
+          activeUser: conteudo,
+          email: "",
+          password: "",
         });
         this.handleClose();
         this.setActiveUser();
@@ -801,8 +803,11 @@ class BaseWindow extends Component {
       })
       .catch(error => {
         let errorMsg = "";
+          // eslint-disable-next-line
         if (error == "TypeError: Failed to fetch")
+          // eslint-disable-next-line
           errorMsg = "Erro No servidor tente novamente mais tarde";
+          // eslint-disable-next-line
         else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
         }
@@ -900,6 +905,7 @@ this.history.replace("/home");
       validate = true;
     }
 
+      // eslint-disable-next-line
     if(this.state.newSenha != this.state.newSenhaConfirm) {
       this.setState({
       emptyCreateFormSenha: true,
@@ -934,7 +940,7 @@ this.history.replace("/home");
 	        sobrenome : this.state.newSobrenome,
 	        dataNasc : this.state.newDataNasc,
 	        email : this.state.newEmail,
-	        senha : this.state.newSenha,
+          senha : this.state.newSenha,
         })
       })
         .then(Response => {
@@ -954,8 +960,10 @@ this.history.replace("/home");
         })
         .catch(error => {
           let errorMsg = "";
+          // eslint-disable-next-line
           if (error == "TypeError: Failed to fetch")
             errorMsg = "Erro No servidor tente novamente mais tarde";
+            // eslint-disable-next-line
           else if (error == "SyntaxError: Unexpected end of JSON input") {
             errorMsg = "e-mail ou senha inválidos";
           }
