@@ -165,7 +165,7 @@ const styles = theme => ({
     width: "100%",
     backgroundColor: "crimsom",
     alignItems: "end",
-    height: "100%"
+    
   },
 
   botttomNavigation: {
@@ -970,7 +970,9 @@ this.history.replace("/home");
           this.setState({
             email: "",
             password: "",
-            errorMessage: errorMsg
+            errorMessage: errorMsg,
+            activeUser: null,
+            auth: !this.state.auth,
           });
   
           this.handleErrorDialogOpen();

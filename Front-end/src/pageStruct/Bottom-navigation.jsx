@@ -18,8 +18,9 @@ const styles = theme => ({
 });
 
 class BottomNavigation extends Component {
-  constructor(props) {
+  constructor(props,state) {
     super(props);
+    this.state = state;
     this.state = {
       userEmail: "",
       emptyForm: false,
@@ -47,8 +48,8 @@ class BottomNavigation extends Component {
   };
 
   render() {
-    // const { classes } = this.props;
     return (
+      
       <footer>
         {/* <SnackbarProvider maxSnack={2}> */}
           <TextField
