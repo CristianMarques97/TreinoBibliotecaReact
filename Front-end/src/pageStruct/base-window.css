@@ -20,7 +20,10 @@ width: 100%;
 }
 
 .pagecontent {
-    background-color: aqua;
+    width: 100%;
+}
+footer {
+    width: 100%;
 }
 
 .drawerUserInfo {
@@ -43,7 +46,7 @@ width: 100%;
 }
 
 
-footer {
+.foot {
     text-align: center;
     width: 100%;
 }

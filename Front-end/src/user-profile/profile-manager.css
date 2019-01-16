@@ -1,0 +1,50 @@
+.card {
+  width: 600px;
+  height: 50px;
+  }
+  .userProfile {
+    width: 100%;
+    height: 100px
+    }
+  .bullet {
+    display: 'inline-block';
+    margin: '0 2px';
+    transform: 'scale(0.8)';
+  }
+
+  .title {
+    font-size: 14;
+  }
+  .pos {
+    margin-bottom: 12;
+  }
+
+  #information{
+      margin-top: 30px;
+  }
+
+  .cardSpan {
+        font-size: 25px
+  }
+  .userInfo {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 25px;
+
+  }
+
+  
+  .userInfoS {
+    margin-left: 20px;
+    font-size: 25px;
+  }
+
+  #userAvatarCard {
+    background-color: orangered;
+    color: "#fff";
+    margin-top: 30px;
+    margin-left: 20%;
+    width: 300px;
+    font-size: 150px;
+
+  }

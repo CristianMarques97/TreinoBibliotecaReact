@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import ProfileManager from './profile-management';
+import './profile-manager.css';
 
 function TabContainer({ children, dir }) {
   return (
@@ -28,6 +29,11 @@ const styles = theme => ({
 });
 
 class MyProfile extends React.Component {
+
+  constructor(props) {
+    super(props); 
+    console.log(this.props.parentState.activeUser);
+  }
   state = {
     value: 0,
   };
@@ -53,7 +59,7 @@ class MyProfile extends React.Component {
             <Tab label="Histórico de Empréstimos"/>
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer><ProfileManager></ProfileManager></TabContainer>}
+        {value === 0 && <TabContainer><ProfileManager usuario = {this.props.parentState.activeUser}></ProfileManager></TabContainer>}
         {value === 1 && <TabContainer>tab 2</TabContainer>}
         {value === 2 && <TabContainer>tab 3</TabContainer>}
       </div>

@@ -164,8 +164,7 @@ const styles = theme => ({
   pageContent: {
     width: "100%",
     backgroundColor: "crimsom",
-    alignItems: "end",
-    
+    alignItems: "end"
   },
 
   botttomNavigation: {
@@ -735,15 +734,17 @@ class BaseWindow extends Component {
             <Router basename="/#">
               <Switch>
                 <Route exact path="/" component={UnauthHome} />
-                <Route path="/home" component={MyProfile} />
+                <Route path="/home" render={() => <MyProfile parentState={this.state} />}/> {/* Passa a informação para o filho(Forma alternativa ao redux) */}
                 <Route path="*" component={PageNotFound} />
               </Switch>
             </Router>
           )}
         </div>
-        <Divider />
 
-        <BottomNavigation className={classes.botttomNavigation} />
+        <footer style= {{marginTop: "400px"}}>
+        <Divider />
+          <BottomNavigation className={classes.botttomNavigation} />
+        </footer>
       </div>
     );
   }
@@ -795,19 +796,18 @@ class BaseWindow extends Component {
           auth: !this.state.auth,
           activeUser: conteudo,
           email: "",
-          password: "",
+          password: ""
         });
         this.handleClose();
         this.setActiveUser();
-    
       })
       .catch(error => {
         let errorMsg = "";
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         if (error == "TypeError: Failed to fetch")
           // eslint-disable-next-line
           errorMsg = "Erro No servidor tente novamente mais tarde";
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
         }
@@ -821,21 +821,21 @@ class BaseWindow extends Component {
       });
   }
 
- setActiveUser() {
-  this.usernameAvatar =
-  this.state.activeUser.nome[0] + this.state.activeUser.sobrenome[0];
+  setActiveUser() {
+    this.usernameAvatar =
+      this.state.activeUser.nome[0] + this.state.activeUser.sobrenome[0];
 
-console.log(this.usernameAvatar);
-console.log(this.state.activeUser);
+    console.log(this.usernameAvatar);
+    console.log(this.state.activeUser);
 
-this.bemvindo =
-  "Bem Vindo: " +
-  this.state.activeUser.nome +
-  " " +
-  this.state.activeUser.sobrenome;
-this.handleDialogOpen();
-this.history.replace("/home");
- }
+    this.bemvindo =
+      "Bem Vindo: " +
+      this.state.activeUser.nome +
+      " " +
+      this.state.activeUser.sobrenome;
+    this.handleDialogOpen();
+    this.history.replace("/home");
+  }
 
   logoff() {
     this.setState({
@@ -898,33 +898,36 @@ this.history.replace("/home");
       validate = true;
     }
 
-    if (this.state.newSenhaConfirm === null || this.state.newSenhaConfirm === "") {
+    if (
+      this.state.newSenhaConfirm === null ||
+      this.state.newSenhaConfirm === ""
+    ) {
       this.setState({
         emptyCreateFormSenhaConfirm: true
       });
       validate = true;
     }
 
-      // eslint-disable-next-line
-    if(this.state.newSenha != this.state.newSenhaConfirm) {
+    // eslint-disable-next-line
+    if (this.state.newSenha != this.state.newSenhaConfirm) {
       this.setState({
-      emptyCreateFormSenha: true,
-      emptyCreateFormSenhaConfirm: true,
+        emptyCreateFormSenha: true,
+        emptyCreateFormSenhaConfirm: true
       });
       validate = true;
     }
 
-    if (validate) {      
+    if (validate) {
       return;
-    }
-
-    else {
-
-      if(this.state.emptyCreateFormSenha && this.state.emptyCreateFormSenhaConfirm) {
+    } else {
+      if (
+        this.state.emptyCreateFormSenha &&
+        this.state.emptyCreateFormSenhaConfirm
+      ) {
         this.setState({
           emptyCreateFormSenha: false,
-          emptyCreateFormSenhaConfirm: false,
-          });
+          emptyCreateFormSenhaConfirm: false
+        });
       }
 
       let conteudo = null;
@@ -936,11 +939,11 @@ this.history.replace("/home");
         },
         mode: "cors",
         body: JSON.stringify({
-          nome : this.state.newNome,
-	        sobrenome : this.state.newSobrenome,
-	        dataNasc : this.state.newDataNasc,
-	        email : this.state.newEmail,
-          senha : this.state.newSenha,
+          nome: this.state.newNome,
+          sobrenome: this.state.newSobrenome,
+          dataNasc: this.state.newDataNasc,
+          email: this.state.newEmail,
+          senha: this.state.newSenha
         })
       })
         .then(Response => {
@@ -948,7 +951,7 @@ this.history.replace("/home");
         })
         .then(jsonResponse => {
           conteudo = jsonResponse;
-  
+
           this.setState({
             auth: !this.state.auth,
             activeUser: conteudo
@@ -956,14 +959,13 @@ this.history.replace("/home");
           this.handleCreateDialogOpen();
           this.limparCampos();
           this.setActiveUser();
-      
         })
         .catch(error => {
           let errorMsg = "";
           // eslint-disable-next-line
           if (error == "TypeError: Failed to fetch")
             errorMsg = "Erro No servidor tente novamente mais tarde";
-            // eslint-disable-next-line
+          // eslint-disable-next-line
           else if (error == "SyntaxError: Unexpected end of JSON input") {
             errorMsg = "e-mail ou senha inválidos";
           }
@@ -972,14 +974,14 @@ this.history.replace("/home");
             password: "",
             errorMessage: errorMsg,
             activeUser: null,
-            auth: !this.state.auth,
+            auth: !this.state.auth
           });
-  
+
           this.handleErrorDialogOpen();
         });
-    this.handleCreateDialogOpen();
+      this.handleCreateDialogOpen();
 
-    return;
+      return;
     }
   }
 }

@@ -6,7 +6,6 @@ import Button from "@material-ui/core/Button";
 // import { SnackbarProvider, withSnackbar } from "notistack";
 
 
-import "./base-window";
 
 const styles = theme => ({
   snackbar: {
@@ -50,7 +49,7 @@ class BottomNavigation extends Component {
   render() {
     return (
       
-      <footer>
+      <div className = "foot">
         {/* <SnackbarProvider maxSnack={2}> */}
           <TextField
             error={this.state.emptyForm}
@@ -95,7 +94,7 @@ class BottomNavigation extends Component {
             className={classes.snackbar}
           /> 
           </SnackbarProvider> */}
-      </footer>
+      </div>
     );
   }
 
