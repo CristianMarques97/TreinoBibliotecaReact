@@ -182,10 +182,12 @@ class BaseWindow extends Component {
   qtdeAlert = 0;
   bemvindo = "";
   usernameAvatar = "";
+  userName = "";
   constructor(props) {
     super(props);
 
     this.state = {
+      hasProfileIcon: false,
       // login form
       email: "",
       password: "",
@@ -617,14 +619,24 @@ class BaseWindow extends Component {
           {this.state.auth && (
             <div className={classes.avatarDiv}>
               <div className="drawerUserInfo">
-                <Avatar id="userAvatar" className={classes.orangeAvatar}>
-                  {this.usernameAvatar}
-                </Avatar>
-                <span id="infoUserName">
-                  {/* {BaseWindow.usuarioLogado.nome +
-                    " " +
-                    BaseWindow.usuarioLogado.sobrenome} */}
-                </span>
+                {!this.state.hasProfileIcon && (
+                  <Avatar id="userAvatar" className={classes.orangeAvatar}>
+                    {this.usernameAvatar}
+                  </Avatar>
+                )}
+
+                {this.state.hasProfileIcon && (
+                  <Avatar
+                    id="userAvatar"
+                    src={
+                      "data:image/png;base64," +
+                      this.state.activeUser.profileIconDecoded
+                    }
+                    className={classes.orangeAvatar}
+                  />
+                )}
+
+                <span id="infoUserName">{this.userName}</span>
               </div>
               <div className="drawerOptions">
                 <MenuItem onClick={() => this.navigate("/home")}>
@@ -734,15 +746,19 @@ class BaseWindow extends Component {
             <Router basename="/#">
               <Switch>
                 <Route exact path="/" component={UnauthHome} />
-                <Route path="/home" render={() => <MyProfile parentState={this.state} />}/> {/* Passa a informação para o filho(Forma alternativa ao redux) */}
+                <Route
+                  path="/home"
+                  render={() => <MyProfile parentState={this.state} />}
+                />{" "}
+                {/* Passa a informação para o filho(Forma alternativa ao redux) */}
                 <Route path="*" component={PageNotFound} />
               </Switch>
             </Router>
           )}
         </div>
 
-        <footer style= {{marginTop: "400px"}}>
-        <Divider />
+        <footer style={{ marginTop: "400px" }}>
+          <Divider />
           <BottomNavigation className={classes.botttomNavigation} />
         </footer>
       </div>
@@ -798,6 +814,12 @@ class BaseWindow extends Component {
           email: "",
           password: ""
         });
+
+        if(conteudo.profileIconDecoded != null){
+          this.setState({
+            hasProfileIcon: true,
+          });
+        }
         this.handleClose();
         this.setActiveUser();
       })
@@ -811,6 +833,7 @@ class BaseWindow extends Component {
         else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
         }
+
         this.setState({
           email: "",
           password: "",
@@ -833,6 +856,9 @@ class BaseWindow extends Component {
       this.state.activeUser.nome +
       " " +
       this.state.activeUser.sobrenome;
+    this.userName =
+      this.state.activeUser.nome + " " + this.state.activeUser.sobrenome;
+
     this.handleDialogOpen();
     this.history.replace("/home");
   }

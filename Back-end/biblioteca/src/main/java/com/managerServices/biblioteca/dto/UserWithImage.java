@@ -5,15 +5,13 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name="clientes")
-public class Usuario implements Serializable {
+public class UserWithImage implements Serializable {
 	
 	/**
 	 * 
@@ -21,7 +19,6 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int id;
 	
 	@Column(columnDefinition = "text")
@@ -39,17 +36,8 @@ public class Usuario implements Serializable {
 	@Column(columnDefinition = "text")
 	private String senha;
 	
-	
-	private String profileIconDecoded;
-	
-	public String getProfileIconDecoded() {
-		return profileIconDecoded;
-	}
-	public void setProfileIconDecoded(String profileIconDecoded) {
-		this.profileIconDecoded = profileIconDecoded;
-	}
 	@Column(columnDefinition = "byte")
-	byte[] profile_icon;
+	private byte[] profile_icon;
 	
 	public Date getDatanasc() {
 		return datanasc;
