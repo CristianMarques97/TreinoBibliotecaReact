@@ -39,6 +39,30 @@ public class Usuario implements Serializable {
 	@Column(columnDefinition = "text")
 	private String senha;
 	
+	
+	private String profileIconDecoded;
+	
+	public String getProfileIconDecoded() {
+		return profileIconDecoded;
+	}
+	public void setProfileIconDecoded(String profileIconDecoded) {
+		this.profileIconDecoded = profileIconDecoded;
+	}
+	@Column(columnDefinition = "byte")
+	byte[] profile_icon;
+	
+	public Date getDatanasc() {
+		return datanasc;
+	}
+	public void setDatanasc(Date datanasc) {
+		this.datanasc = datanasc;
+	}
+	public byte[] getProfile_icon() {
+		return profile_icon;
+	}
+	public void setProfile_icon(byte[] profile_icon) {
+		this.profile_icon = profile_icon;
+	}
 	public int getId() {
 		return id;
 	}

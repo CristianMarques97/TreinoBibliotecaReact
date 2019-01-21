@@ -40,6 +40,7 @@ class MyProfile extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ value });
+    console.log (this.props.parentState.activeUser);
   };
 
   handleChangeIndex = index => {
@@ -59,7 +60,7 @@ class MyProfile extends React.Component {
             <Tab label="Histórico de Empréstimos"/>
           </Tabs>
         </AppBar>
-        {value === 0 && <TabContainer><ProfileManager usuario = {this.props.parentState.activeUser}></ProfileManager></TabContainer>}
+        {value === 0 && <TabContainer><ProfileManager usuario = {this.props.parentState}></ProfileManager></TabContainer>}
         {value === 1 && <TabContainer>tab 2</TabContainer>}
         {value === 2 && <TabContainer>tab 3</TabContainer>}
       </div>

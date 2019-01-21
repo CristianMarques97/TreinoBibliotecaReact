@@ -1,39 +1,43 @@
 import React, { Component } from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import classnames from "classnames";
+
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
+
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Collapse from "@material-ui/core/Collapse";
+
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import red from "@material-ui/core/colors/red";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Add from "@material-ui/icons/Add";
 import EditTwoTone from "@material-ui/icons/EditTwoTone";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import axios from 'axios';
-
+import Button from "@material-ui/core/Button";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 
 import "./profile-manager.css";
-import baseWindow from "../pageStruct/base-window";
 
 class ProfileManager extends Component {
   state = {
     anchorEl: null,
     image: null,
+    imageToUpload: null,
+    openDialog: false
   };
+
+  handleDialogClose() {
+    this.setState({
+      openDialog: !this.state.openDialog,
+    })
+  }
 
   handleMenuClick = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -45,7 +49,12 @@ class ProfileManager extends Component {
 
   constructor(props) {
     super(props);
-    console.log(this.props.usuario);
+
+    // console.log(this.props.usuario.activeUser.profileIconDecoded);
+    console.log(this.props.usuario.activeUser);
+
+   
+
   }
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
@@ -54,28 +63,55 @@ class ProfileManager extends Component {
   render() {
     let dataNasc = "";
 
-    dataNasc += this.props.usuario.dataNasc[8];
-    dataNasc += this.props.usuario.dataNasc[9];
+    dataNasc += this.props.usuario.activeUser.dataNasc[8];
+    dataNasc += this.props.usuario.activeUser.dataNasc[9];
 
     dataNasc += "/";
 
-    dataNasc += this.props.usuario.dataNasc[5];
-    dataNasc += this.props.usuario.dataNasc[6];
+    dataNasc += this.props.usuario.activeUser.dataNasc[5];
+    dataNasc += this.props.usuario.activeUser.dataNasc[6];
 
     dataNasc += "/";
 
-    dataNasc += this.props.usuario.dataNasc[0];
-    dataNasc += this.props.usuario.dataNasc[1];
-    dataNasc += this.props.usuario.dataNasc[2];
-    dataNasc += this.props.usuario.dataNasc[3];
-    // action={
-    //   // <IconButton>
-    //   //   <MoreVertIcon />
-    //   // </IconButton>
-    // }
+    dataNasc += this.props.usuario.activeUser.dataNasc[0];
+    dataNasc += this.props.usuario.activeUser.dataNasc[1];
+    dataNasc += this.props.usuario.activeUser.dataNasc[2];
+    dataNasc += this.props.usuario.activeUser.dataNasc[3];
+    
     return (
       <div className="userProfile">
-      <input type="file" onChange= {this.handleFileSelect} id="img" hidden={true}/>
+        <input
+          type="file"
+          onChange={() => this.handleAvatarChange()}
+          id="img"
+          hidden={true}
+          accept=".png,.PNG"
+        />
+
+<Dialog
+          open={this.state.openDialog}
+          onClose={() => this.handleDialogClose()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+          Confirmar ? 
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            Deseja aplicar a nova imagem ao seu avatar ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.handleFileSelect()} color="primary">
+              Prosseguir
+            </Button>
+            <Button onClick={() => this.noFileSelect()} color="primary">
+              Retornar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Card className="card">
           <CardContent>
             <Typography id="cardTitle" variant="h1">
@@ -92,12 +128,6 @@ class ProfileManager extends Component {
               >
                 <MenuItem onClick={this.handleMenuClose}>
                   <ListItemIcon>
-                    <Add />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Inbox" />
-                </MenuItem>
-                <MenuItem onClick={this.handleMenuClose}>
-                  <ListItemIcon>
                     <EditTwoTone />
                   </ListItemIcon>
                   <ListItemText inset primary="Editar Informações" />
@@ -107,28 +137,42 @@ class ProfileManager extends Component {
                     <AccountCircle />
                   </ListItemIcon>
                   <ListItemText inset primary="Editar Avatar" />
-                </MenuItem>              </Menu>
+                </MenuItem>
+                <MenuItem onClick={() => this.removeAvatar()}>
+                  <ListItemIcon>
+                    <Add />
+                  </ListItemIcon>
+                  <ListItemText inset primary="Remover Avatar" />
+                </MenuItem>
+              </Menu>
             </Typography>
             <Typography variant="h5">
               <span>informações pessoais:</span>
             </Typography>
             <Typography variant="h5">
-              <Avatar id="userAvatarCard" style={{ height: "300px" }}>
-                {this.props.usuario.nome[0]}
-                {this.props.usuario.sobrenome[0]}
-              </Avatar>
+              {this.props.usuario.activeUser.profileIconDecoded == null && (
+                <Avatar id="userAvatarCard" style={{ height: "300px" }}>
+                  {this.props.usuario.activeUser.nome[0]}
+                  {this.props.usuario.activeUser.sobrenome[0]}
+                </Avatar>
+              )}
+
+              {this.props.usuario.activeUser.profileIconDecoded != null && (
+                <Avatar id="userAvatarCard" src= {"data:image/png;charset=utf-8;base64," + this.props.usuario.activeUser.profileIconDecoded} style={{ height: "300px" }}/>
+             
+              )}
             </Typography>
             <Typography id="information" component="p">
               <span className="cardSpan">nome:</span>
-              <span className="userInfo">{this.props.usuario.nome} </span>
+              <span className="userInfo">{this.props.usuario.activeUser.nome} </span>
 
               <span className="userInfoS">Sobrenome:</span>
-              <span className="userInfo">{this.props.usuario.sobrenome} </span>
+              <span className="userInfo">{this.props.usuario.activeUser.sobrenome} </span>
             </Typography>
 
             <Typography id="information" component="p">
               <span className="cardSpan">E-mail:</span>
-              <span className="userInfo">{this.props.usuario.email}</span>
+              <span className="userInfo">{this.props.usuario.activeUser.email}</span>
             </Typography>
 
             <Typography id="information" component="p">
@@ -140,51 +184,76 @@ class ProfileManager extends Component {
       </div>
     );
   }
+  fr = new FileReader();
+  handleAvatarChange() {
+    let img = document.getElementById("img").files[0];
 
-  handleFileSelect = (event) => {
-    let img = this.imageToBase64(event.target.files[0])
+    this.fr = new FileReader();
+    this.fr.readAsDataURL(img);
+    this.handleDialogClose();
+  }
 
-    console.log(event.target.files[0]);
-    console.log(img);
+  noFileSelect() {
+    this.setState({
+      anchorEl: null,
+      openDialog: false,
+    });
 
-      const fd = new FormData();
-      fd.append('id', this.props.usuario.id)
-      fd.append('image', img, event.target.files[0].name);
-      axios.post("http://localhost:8080/library/user/manager/image-edit",fd,{
-        headers: {
-          'Access-Control-Allow-Origin' : '*',
-          'Access-Control-Allow-Methods' : 'POST',
+    document.getElementById("img").value = null;
+  }
+
+  removeAvatar() {
+    fetch("http://localhost:8080/library/user/manager/image-edit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
-         method: "POST",
-         proxy: {
-           host: "localhost",
-           port: "8080",
-           
-         }
-         })
-      .then( res => {
-        console.log(res);
+      mode: "cors",
+      body: JSON.stringify({
+        id: this.props.usuario.activeUser.id,
+        image: null,
+      })
+    }).then(Response => {
+      this.setState({
+        anchorEl: null,
       });
+        this.props.usuario.activeUser.profileIconDecoded = null;
+        this.props.usuario.hasProfileIcon = false;
+        this.forceUpdate();
+    }) ;
 
   }
 
-  changeProfileAvatar(){
-      document.getElementById("img").click();
+  handleFileSelect = event => {
+
+    this.setState({
+      anchorEl: null,
+      openDialog: false,
+    });
+    fetch("http://localhost:8080/library/user/manager/image-edit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        id: this.props.usuario.activeUser.id,
+        image: this.fr.result,
+      })
+    }).then(response => {
+      document.getElementById("img").value = null;
+      this.props.usuario.activeUser.profileIconDecoded = this.fr.result.replace("data:image/png;base64,", "");
+      // console.log(this.props.usuario.activeUser);
+      this.props.usuario.hasProfileIcon = true;
+      this.forceUpdate();
+    });
+
+  };
+
+  changeProfileAvatar() {
+    document.getElementById("img").click();
   }
 
-   imageToBase64(img)
-{
-    var canvas, ctx, dataURL, base64;
-    canvas = document.createElement("canvas");
-    ctx = canvas.getContext("2d");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    dataURL = canvas.toDataURL("image/png");
-    base64 = dataURL.replace(/^data:image\/png;base64,/, "");
-    return base64;
-}
 }
 
 export default ProfileManager;
-
