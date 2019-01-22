@@ -1,9 +1,11 @@
 .card {
   width: 600px;
   height: 50px;
+  float: left;
   }
   .userProfile {
     width: 100%;
+    min-width: 1030px;
     height: 100px
     }
   .bullet {
@@ -58,5 +60,27 @@
   }
 
   #HeaderButton {
-    margin-left: 24.2%;
+    margin-left: 20.2%;
+  }
+
+  #editCard {
+    margin-left: 1.5%;
+     width: 52%;
+  }
+
+  #infoCArd {
+    width: 46.326%;
+  }
+
+
+  @media screen and (max-width: 1310px) {
+    #HeaderButton {
+      margin-left: 5.2%;
+    }
+  } 
+  
+  @media screen and (max-width: 1121px) {
+    #HeaderButton {
+      margin-left: 0.5%;
+    }
   }

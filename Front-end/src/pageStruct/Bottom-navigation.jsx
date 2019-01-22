@@ -71,6 +71,7 @@ class BottomNavigation extends Component {
             variant="contained"
             size="medium"
             className="btnLogin"
+            style= {{marginTop: "25px", marginLeft: "25px"}}
             onClick={() => this.subscribe()}
           >
             Entrar

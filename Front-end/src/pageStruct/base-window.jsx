@@ -824,20 +824,31 @@ class BaseWindow extends Component {
         this.setActiveUser();
       })
       .catch(error => {
+        console.log(error);
+        
         let errorMsg = "";
         // eslint-disable-next-line
         if (error == "TypeError: Failed to fetch")
           // eslint-disable-next-line
           errorMsg = "Erro No servidor tente novamente mais tarde";
         // eslint-disable-next-line
+        else if (error == "TypeError: Cannot read property '0' of undefined") {
+          errorMsg = "e-mail ou senha inválidos";
+        }
+        // eslint-disable-next-line
         else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
+        }
+        else {
+          errorMsg = "houve um erro inesperado";
         }
 
         this.setState({
           email: "",
           password: "",
-          errorMessage: errorMsg
+          errorMessage: errorMsg,
+          auth: false,
+          activeUser: conteudo,
         });
 
         this.handleErrorDialogOpen();

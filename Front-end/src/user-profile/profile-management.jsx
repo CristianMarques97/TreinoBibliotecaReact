@@ -3,17 +3,18 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import Card from "@material-ui/core/Card";
-
 import CardContent from "@material-ui/core/CardContent";
 
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
+import TextField  from "@material-ui/core/TextField";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Add from "@material-ui/icons/Add";
+import Delete from "@material-ui/icons/Delete";
+import Clear from "@material-ui/icons/Clear";
 import EditTwoTone from "@material-ui/icons/EditTwoTone";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Button from "@material-ui/core/Button";
@@ -30,12 +31,32 @@ class ProfileManager extends Component {
     anchorEl: null,
     image: null,
     imageToUpload: null,
-    openDialog: false
+    openDialog: false,
+    alterCard: false,
+
+    editNome: "", 
+    editSobrenome: "", 
+    editEmail: "", 
+    editSenha: "", 
+    editSenhaConfirm: "",
+    
+    editNomeError: false, 
+    editSobrenomeError: false, 
+    editEmailError: false, 
+    editSenhaError: false, 
+    editSenhaConfirmError: false,
   };
 
   handleDialogClose() {
     this.setState({
       openDialog: !this.state.openDialog,
+    })
+  }
+
+  handleAlterCard = () => {
+    this.limparCampos();
+    this.setState({
+      alterCard: !this.state.alterCard,
     })
   }
 
@@ -59,6 +80,14 @@ class ProfileManager extends Component {
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
   };
+
+  handleOpenEditCard = () => {
+    this.limparCampos();
+    this.setState({
+      anchorEl: null,
+      alterCard: !this.state.alterCard,
+    });
+  }
 
   render() {
     let dataNasc = "";
@@ -112,10 +141,10 @@ class ProfileManager extends Component {
           </DialogActions>
         </Dialog>
 
-        <Card className="card">
+        <Card className="card" id = "infoCArd">
           <CardContent>
             <Typography id="cardTitle" variant="h1">
-              <span style={{ width: "90%" }}>Dados Cadastrais: </span>
+              <span style={{ width: "60%" }}>Dados Cadastrais: </span>
               <IconButton id="HeaderButton" onClick={this.handleMenuClick}>
                 <MoreVertIcon />
               </IconButton>
@@ -126,7 +155,7 @@ class ProfileManager extends Component {
                 open={this.state.anchorEl}
                 onClose={this.handleMenuClose}
               >
-                <MenuItem onClick={this.handleMenuClose}>
+                <MenuItem onClick={() => this.handleOpenEditCard()}>
                   <ListItemIcon>
                     <EditTwoTone />
                   </ListItemIcon>
@@ -136,11 +165,11 @@ class ProfileManager extends Component {
                   <ListItemIcon>
                     <AccountCircle />
                   </ListItemIcon>
-                  <ListItemText inset primary="Editar Avatar" />
+                  <ListItemText inset primary="Alterar Avatar" />
                 </MenuItem>
                 <MenuItem onClick={() => this.removeAvatar()}>
                   <ListItemIcon>
-                    <Add />
+                    <Delete />
                   </ListItemIcon>
                   <ListItemText inset primary="Remover Avatar" />
                 </MenuItem>
@@ -181,6 +210,107 @@ class ProfileManager extends Component {
             </Typography>
           </CardContent>
         </Card>
+{ this.state.alterCard && (
+<div>
+<Card className="card" id = "editCard">
+      <CardContent>
+        <Typography  color="textSecondary" gutterBottom>
+          <span style={{ width: "90%" }}> Alteração de Dados:: </span>
+            <IconButton id="HeaderButton" onClick={() => this.handleAlterCard()}>
+          <Clear />
+          </IconButton>
+        </Typography>
+        <TextField
+        className = "editTx"
+        value = {this.state.editNome}
+          id="outlined-name"
+          label="Nome"
+          margin="normal"
+          variant="outlined"
+          style={{height:"45px",width:"75%"}}
+          error = {this.state.editNomeError}
+          onChange= {event => {
+            this.setState({
+              editNomeError : false,
+              editNome: event.target.value,
+            })
+          }}
+        />
+
+        <TextField
+        className = "editTx"
+        value = {this.state.editSobrenome}
+          id="outlined-sobrenome"
+          label="Sobrenome"
+          margin="normal"
+          variant="outlined"
+          style={{height:"45px",width:"75%"}}
+          error = {this.state.editSobrenomeError}
+          onChange= {event => {
+            this.setState({
+              editSobrenomeError : false,
+              editSobrenome : event.target.value,
+            })
+          }}
+        />
+        <TextField
+        className = "editTx"
+        value = {this.state.editEmail}
+          id="outlined-email"
+          label="E-mail"
+          margin="normal"
+          variant="outlined"
+          type="email"
+          style={{height:"45px",width:"75%"}}
+          error = {this.state.editEmailError}
+          onChange= {event => {
+            this.setState({
+              editEmailError : false,
+              editEmail : event.target.value,
+            })
+          }}
+        />
+        <TextField
+        className = "editTx"
+        value = {this.state.editSenha}
+          id="outlined-password"
+          type="password"
+          label="Senha"
+          margin="normal"
+          variant="outlined"
+          style={{height:"45px",width:"75%"}}
+          error = {this.state.editSenhaError}
+          onChange= {event => {
+            this.setState({
+              editSenhaError : false,
+              editSenha : event.target.value,
+            })
+          }}
+        />
+        <TextField
+        className = "editTx"
+        value = {this.state.editSenhaConfirm}
+          id="outlined-passwordConfirm"
+          type="password"
+          label="Confirmar Senha"
+          margin="normal"
+          variant="outlined"
+          style={{height:"45px",width:"75%"}}
+          error = {this.state.editSenhaConfirmError}
+          onChange= {event => {
+            this.setState({
+            editSenhaConfirmError :false,
+            editSenhaConfirm : event.target.value,
+            })
+          }}
+        />
+        <Button size="small" style={{height:"45px",width:"50%",marginLeft:"12.5%",marginTop:"30px"}} onClick={() => this.submit()}>Alterar</Button>
+      </CardContent>
+
+    </Card>
+</div>
+    )}
+
       </div>
     );
   }
@@ -254,6 +384,55 @@ class ProfileManager extends Component {
     document.getElementById("img").click();
   }
 
+  limparCampos() {
+    this.setState({
+    editNome: "", 
+    editSobrenome: "", 
+    editEmail: "", 
+    editSenha: "", 
+    editSenhaConfirm: "",
+  });
+
+  }
+  checkEdit() {
+// eslint-disable-next-line
+    if (this.state.editNome == null || this.state.editNome == "" ) {
+      this.setState({editNomeError: true,});
+    }
+// eslint-disable-next-line
+    if (this.state.editSobrenome == null || this.state.editSobrenome == "" ) {
+      this.setState({editSobrenomeError: true,});
+    }
+// eslint-disable-next-line
+    if (this.state.editEmail == null || this.state.editEmail == "" ) {
+      this.setState({editEmailError: true,});
+    }
+// eslint-disable-next-line
+    if (this.state.editSenha == null || this.state.editSenha == "" ) {
+      this.setState({editSenhaError: true,});
+    }
+// eslint-disable-next-line
+    if (this.state.editSenhaConfirm == null || this.state.editSenhaConfirm == "") {
+      this.setState({editSenhaConfirmError: true,});
+    }
+  
+  } 
+
+  /// precisa arrumar
+  submit() {
+    this.checkEdit();
+    let user = this.props.activeUser;
+    
+    if(this.state.editNomeError || this.state.editSobrenomeError || this.state.editEmailError || this.state.editSenhaError || this.state.editSenhaConfirmError ) {
+      console.log("vazei");
+      return;
+    }
+    
+      console.log("Passou aqui !");
+      this.limparCampos();
+    
+
+  }
 }
 
 export default ProfileManager;
