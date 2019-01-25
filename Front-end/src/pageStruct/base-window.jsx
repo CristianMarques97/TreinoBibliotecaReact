@@ -279,6 +279,11 @@ class BaseWindow extends Component {
     this.setState({ mobileMoreAnchorEl: null });
   };
 
+  navigateHome() {
+   this.history.replace("/home");
+   this.handleMenuClose();
+  }
+
   // render screen
 
   render() {
@@ -295,7 +300,7 @@ class BaseWindow extends Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+        <MenuItem onClick={() => this.navigateHome()}>Profile</MenuItem>
         <MenuItem onClick={this.handleClose}>My account</MenuItem>
       </Menu>
     );
@@ -638,8 +643,9 @@ class BaseWindow extends Component {
 
                 <span id="infoUserName">{this.userName}</span>
               </div>
+              <Divider/>
               <div className="drawerOptions">
-                <MenuItem onClick={() => this.navigate("/home")}>
+                <MenuItem onClick={() => this.history.replace("/home")}>
                   User Name
                 </MenuItem>
                 <MenuItem>Perfil</MenuItem>

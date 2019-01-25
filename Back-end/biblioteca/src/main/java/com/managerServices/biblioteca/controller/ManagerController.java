@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.managerServices.biblioteca.dao.repository.ImageRepository;
+import com.managerServices.biblioteca.dao.repository.UserEditRepository;
 import com.managerServices.biblioteca.dao.repository.UserRepository;
 import com.managerServices.biblioteca.dto.AvatarImage;
 import com.managerServices.biblioteca.dto.AvatarImageSendRequest;
 import com.managerServices.biblioteca.dto.LoginRequest;
+import com.managerServices.biblioteca.dto.UserEdit;
 import com.managerServices.biblioteca.dto.Usuario;
 //import com.managerServices.biblioteca.service.DataBaseService;
 
@@ -36,6 +38,9 @@ public class ManagerController {
 
 	@Autowired
 	private ImageRepository imgRepo;
+	
+	@Autowired
+	private UserEditRepository userRepo;
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/user/manager/image-edit")
@@ -94,6 +99,13 @@ public class ManagerController {
 		c.add(Calendar.DATE, 1);
 		return new Date(c.getTimeInMillis());
 
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
+	@PostMapping("/user/manager/edit-info")
+	public UserEdit editUserInfo(@RequestBody UserEdit updateUserRquest) {
+		log.info("Request: {}", "Edit User Info: ");
+		return userRepo.save(updateUserRquest);
 	}
 
 }
