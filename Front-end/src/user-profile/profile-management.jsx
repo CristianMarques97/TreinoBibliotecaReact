@@ -139,7 +139,7 @@ class ProfileManager extends Component {
     const { classes } = this.props;
 
     return (
-      <div className="userProfile">
+      <div className="userProfile" id="usrProfile">
         <Snackbar
           style = {{height: "25px", /* backgroundColor: "rgba(50, 204, 19, 0.89)" */}}
           anchorOrigin={{
@@ -601,12 +601,59 @@ class ProfileManager extends Component {
       auth = false;
     }
 
-    if (!auth) {
-      console.log("deu ruim");
+    if (!auth) { 
+      return;
+    }
+// eslint-disable-next-line
+    if(this.state.editSenha != this.props.usuario.activeUser.senha) {
+      this.snackbarMessage = "Senha atual incorreta";
+      this.setState({
+        editSenha: "",
+      });
+      this.handleClick();
+      return;
+    }
+// eslint-disable-next-line
+    if(this.state.editSenhaNew != this.state.editSenhaConfirm) {
+      this.snackbarMessage = "O campo de confirmação da nova senha é diferente";
+      this.setState({
+        editSenha: "",
+      });
+      this.handleClick();
+      return;
+    }
+// eslint-disable-next-line
+    if(this.state.editSenhaNew == this.props.usuario.activeUser.senha) {
+      this.snackbarMessage = "Nova senha é igual a senha atual";
+      this.setState({
+        editSenha: "",
+      });
+      this.handleClick();
+      return;
+
     }
 
-    this.handleClick();
+    this.snackbarMessage = "Houve um erro inesperado";
+    fetch("http://localhost:8080/library/user/manager/password-change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        id: this.props.usuario.activeUser.id,
+        senha: this.state.editSenhaNew,
+      })
+    }).then(response => {
+     
+      this.snackbarMessage = "Alteração com sucesso";
 
+      this.props.usuario.activeUser.senha = this.state.editSenhaNew;
+
+      this.handleAlterCard();
+      this.handleClick();
+      this.limparCampos();
+    });
   }
 }
 

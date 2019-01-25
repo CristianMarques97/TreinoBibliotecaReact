@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="clientes")
-public class UserEdit implements Serializable{
+public class UserEdit implements Serializable {
 	
 	/**
 	 * 

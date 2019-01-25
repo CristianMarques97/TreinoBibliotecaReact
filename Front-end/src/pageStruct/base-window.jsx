@@ -763,7 +763,7 @@ class BaseWindow extends Component {
           )}
         </div>
 
-        <footer style={{ marginTop: "400px" }}>
+        <footer style={{ marginTop: "80px" }}>
           <Divider />
           <BottomNavigation className={classes.botttomNavigation} />
         </footer>

@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.managerServices.biblioteca.dao.repository.ChangePasswordRepository;
 import com.managerServices.biblioteca.dao.repository.ImageRepository;
 import com.managerServices.biblioteca.dao.repository.UserEditRepository;
 import com.managerServices.biblioteca.dao.repository.UserRepository;
 import com.managerServices.biblioteca.dto.AvatarImage;
 import com.managerServices.biblioteca.dto.AvatarImageSendRequest;
+import com.managerServices.biblioteca.dto.ChangePasswordRequest;
 import com.managerServices.biblioteca.dto.LoginRequest;
 import com.managerServices.biblioteca.dto.UserEdit;
 import com.managerServices.biblioteca.dto.Usuario;
@@ -41,6 +43,9 @@ public class ManagerController {
 	
 	@Autowired
 	private UserEditRepository userRepo;
+	
+	@Autowired
+	private ChangePasswordRepository passRepo;
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/user/manager/image-edit")
@@ -106,6 +111,13 @@ public class ManagerController {
 	public UserEdit editUserInfo(@RequestBody UserEdit updateUserRquest) {
 		log.info("Request: {}", "Edit User Info: ");
 		return userRepo.save(updateUserRquest);
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
+	@PostMapping("/user/manager/password-change")
+	public ChangePasswordRequest changePassword(@RequestBody ChangePasswordRequest changePasswordRquest) {
+		log.info("Request: {}", "Edit User Info: ");
+		return passRepo.save(changePasswordRquest);
 	}
 
 }
