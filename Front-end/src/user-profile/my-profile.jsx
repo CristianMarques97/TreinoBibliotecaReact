@@ -6,6 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import ProfileManager from './profile-management';
+import AccessAdm from "../administrator/access-adm";
 import './profile-manager.css';
 
 function TabContainer({ children, dir }) {
@@ -57,12 +58,16 @@ class MyProfile extends React.Component {
           <Tabs value={value} onChange={this.handleChange} style = {{backgroundColor: "#000"}}>
             <Tab label="Perfil" />
             <Tab label="Buscar Empréstimos" />
-            <Tab label="Histórico de Empréstimos"/>
+            {!this.props.parentState.activeUser.adm && (<Tab label="Histórico de Empréstimos"/>)}
+            {this.props.parentState.activeUser.adm && (<Tab label="Administração de Acesso"/>)}
+            {this.props.parentState.activeUser.adm && (<Tab label="Gerencia de acervo"/>)}
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer><ProfileManager usuario = {this.props.parentState}></ProfileManager></TabContainer>}
         {value === 1 && <TabContainer>tab 2</TabContainer>}
-        {value === 2 && <TabContainer>tab 3</TabContainer>}
+        {!this.props.parentState.activeUser.adm && (value === 2 && <TabContainer>tab 3</TabContainer>)}
+        {this.props.parentState.activeUser.adm && ( value === 2 && <TabContainer><AccessAdm>usuario = {this.props.parentState}</AccessAdm></TabContainer> )}
+        {this.props.parentState.activeUser.adm && (value === 3 && <TabContainer>tab 5</TabContainer>)}
       </div>
     );
   }

@@ -284,6 +284,11 @@ class ProfileManager extends Component {
               <span className="cardSpan">Data de nascimento: </span>
               <span className="userInfo">{dataNasc}</span>
             </Typography>
+            
+            {this.props.usuario.activeUser.adm && (<Typography id="information" component="p">
+              <span className="cardSpan" style= {{fontSize: "20px"}}>Nível De acesso especial: </span>
+              <span className="userInfo" style= {{fontSize: "20px"}}>Administrador</span>
+            </Typography>)}
           </CardContent>
         </Card>
         {this.state.alterCard && (

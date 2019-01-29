@@ -825,6 +825,10 @@ class BaseWindow extends Component {
           this.setState({
             hasProfileIcon: true,
           });
+        } else {
+          this.setState({
+            hasProfileIcon: false,
+          });
         }
         this.handleClose();
         this.setActiveUser();
@@ -997,7 +1001,8 @@ class BaseWindow extends Component {
 
           this.setState({
             auth: !this.state.auth,
-            activeUser: conteudo
+            activeUser: conteudo,
+            hasProfileIcon: false,
           });
           this.handleCreateDialogOpen();
           this.limparCampos();

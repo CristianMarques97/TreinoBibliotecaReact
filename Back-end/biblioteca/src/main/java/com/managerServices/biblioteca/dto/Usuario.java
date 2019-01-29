@@ -40,6 +40,15 @@ public class Usuario implements Serializable {
 	@Column(columnDefinition = "text")
 	private String senha;
 	
+	@Column(columnDefinition = "boolean")
+	private boolean adm;
+	
+	public boolean isAdm() {
+		return adm;
+	}
+	public void setAdm(boolean adm) {
+		this.adm = adm;
+	}
 	@Transient
 	private String profileIconDecoded;
 	

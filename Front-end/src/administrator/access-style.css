@@ -1,0 +1,14 @@
+#table-toolbar {
+    height: 10px;
+}
+
+#action-buttons {
+    margin-top: 20px;
+    width: 100%;
+}
+
+#act-btn {
+    margin-left: 18%;
+    color: #fff;
+    background-color: rgba(24, 21, 21, 0.801);
+}

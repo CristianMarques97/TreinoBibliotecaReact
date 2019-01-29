@@ -3,11 +3,13 @@ package com.managerServices.biblioteca.controller;
 import java.sql.Date;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,6 +97,30 @@ public class ManagerController {
 
 			return user;
 		}
+
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET })
+	@GetMapping("/management/manager/manage-access")
+	public List<Usuario> findAllUsers() {
+		log.info("Request: {}", "Manage Access");
+		List<Usuario> user = repo.findAll();
+		
+		for (Usuario usuario : user) {
+
+			if (usuario.getProfile_icon() == null) {
+				return user;
+			} else {
+				String encoded = Base64.getEncoder().encodeToString(usuario.getProfile_icon());
+				String decoded = new String(Base64.getDecoder().decode(encoded.getBytes()));
+
+				usuario.setProfileIconDecoded(decoded);
+				usuario.setProfile_icon(null);
+			}
+		}
+		
+		
+		return user;
 
 	}
 
