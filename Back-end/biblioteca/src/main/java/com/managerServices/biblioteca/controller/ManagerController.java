@@ -1,6 +1,7 @@
 package com.managerServices.biblioteca.controller;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.managerServices.biblioteca.dao.repository.AuthRepository;
 import com.managerServices.biblioteca.dao.repository.ChangePasswordRepository;
 import com.managerServices.biblioteca.dao.repository.ImageRepository;
 import com.managerServices.biblioteca.dao.repository.UserEditRepository;
 import com.managerServices.biblioteca.dao.repository.UserRepository;
+import com.managerServices.biblioteca.dto.AuthChangeRequest;
 import com.managerServices.biblioteca.dto.AvatarImage;
 import com.managerServices.biblioteca.dto.AvatarImageSendRequest;
 import com.managerServices.biblioteca.dto.ChangePasswordRequest;
@@ -48,6 +52,9 @@ public class ManagerController {
 	
 	@Autowired
 	private ChangePasswordRepository passRepo;
+	
+	@Autowired
+	private AuthRepository authRepo;
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/user/manager/image-edit")
@@ -78,7 +85,16 @@ public class ManagerController {
 	@PostMapping("/user/manager/new")
 	public Usuario createNewUser(@RequestBody Usuario user) {
 		log.info("Request: {}", "New User");
+		user.setDatanasc(this.addDay(user.getDatanasc()));
 		return repo.save(user);
+	}
+	
+	public Date addDay(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE, 1);
+		return new Date(c.getTimeInMillis());
+
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
@@ -123,14 +139,6 @@ public class ManagerController {
 		return user;
 
 	}
-
-	public Date addDay(Date date) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(date);
-		c.add(Calendar.DATE, 1);
-		return new Date(c.getTimeInMillis());
-
-	}
 	
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/user/manager/edit-info")
@@ -144,6 +152,34 @@ public class ManagerController {
 	public ChangePasswordRequest changePassword(@RequestBody ChangePasswordRequest changePasswordRquest) {
 		log.info("Request: {}", "Edit User Info: ");
 		return passRepo.save(changePasswordRquest);
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
+	@PostMapping("/management/manager/adm-auth")
+	public List<AuthChangeRequest> increaseAccessLevel(@RequestBody List<AuthChangeRequest> users) {
+		log.info("Request: {}", "Admin Auth: ");
+		for (AuthChangeRequest usr : users) {
+			usr.setAdm(true);
+		}
+		return authRepo.saveAll(users);
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
+	@PostMapping("/management/manager/adm-unauth")
+	public List<AuthChangeRequest> decreaseAccessLevel(@RequestBody List<AuthChangeRequest> users) {
+		log.info("Request: {}", "Admin Auth: ");
+		for (AuthChangeRequest usr : users) {
+			usr.setAdm(false);
+		}
+		return authRepo.saveAll(users);
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
+	@PostMapping("/management/manager/remove-user")
+	public HttpStatus removeUser(@RequestBody List<AuthChangeRequest> users) {
+		log.info("Request: {}", "Remove User: ");
+		authRepo.deleteAll(users);
+		return HttpStatus.OK;
 	}
 
 }

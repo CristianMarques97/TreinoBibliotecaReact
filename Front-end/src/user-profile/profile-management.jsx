@@ -141,7 +141,9 @@ class ProfileManager extends Component {
     return (
       <div className="userProfile" id="usrProfile">
         <Snackbar
-          style = {{height: "25px", /* backgroundColor: "rgba(50, 204, 19, 0.89)" */}}
+          style={{
+            height: "25px" /* backgroundColor: "rgba(50, 204, 19, 0.89)" */
+          }}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "left"
@@ -172,7 +174,6 @@ class ProfileManager extends Component {
               <CloseIcon />
             </IconButton>
           ]}
-
         />
 
         <input
@@ -196,11 +197,11 @@ class ProfileManager extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.handleFileSelect()} color="primary">
-              Prosseguir
-            </Button>
             <Button onClick={() => this.noFileSelect()} color="primary">
               Retornar
+            </Button>
+            <Button onClick={() => this.handleFileSelect()} color="primary">
+              Prosseguir
             </Button>
           </DialogActions>
         </Dialog>
@@ -284,11 +285,17 @@ class ProfileManager extends Component {
               <span className="cardSpan">Data de nascimento: </span>
               <span className="userInfo">{dataNasc}</span>
             </Typography>
-            
-            {this.props.usuario.activeUser.adm && (<Typography id="information" component="p">
-              <span className="cardSpan" style= {{fontSize: "20px"}}>Nível De acesso especial: </span>
-              <span className="userInfo" style= {{fontSize: "20px"}}>Administrador</span>
-            </Typography>)}
+
+            {this.props.usuario.activeUser.adm && (
+              <Typography id="information" component="p">
+                <span className="cardSpan" style={{ fontSize: "20px" }}>
+                  Nível De acesso especial:{" "}
+                </span>
+                <span className="userInfo" style={{ fontSize: "20px" }}>
+                  Administrador
+                </span>
+              </Typography>
+            )}
           </CardContent>
         </Card>
         {this.state.alterCard && (
@@ -545,15 +552,17 @@ class ProfileManager extends Component {
       editNull = true;
     }
     // eslint-disable-next-line
-    if(this.state.editNome == this.props.usuario.activeUser.nome &&
-          // eslint-disable-next-line
-       this.state.editSobrenome == this.props.usuario.activeUser.sobrenome &&
-           // eslint-disable-next-line
-       this.state.editEmail == this.props.usuario.activeUser.email) {
-         this.snackbarMessage = "Nenhum dado foi alterado";
-         this.handleClick();
-         return;
-       }
+    if (
+      this.state.editNome == this.props.usuario.activeUser.nome &&
+      // eslint-disable-next-line
+      this.state.editSobrenome == this.props.usuario.activeUser.sobrenome &&
+      // eslint-disable-next-line
+      this.state.editEmail == this.props.usuario.activeUser.email
+    ) {
+      this.snackbarMessage = "Nenhum dado foi alterado";
+      this.handleClick();
+      return;
+    }
 
     if (editNull) {
       return;
@@ -569,10 +578,9 @@ class ProfileManager extends Component {
         id: this.props.usuario.activeUser.id,
         nome: this.state.editNome,
         sobrenome: this.state.editSobrenome,
-        email: this.state.editEmail,
+        email: this.state.editEmail
       })
     }).then(response => {
-     
       this.snackbarMessage = "Alteração com sucesso";
 
       this.props.usuario.activeUser.nome = this.state.editNome;
@@ -583,8 +591,7 @@ class ProfileManager extends Component {
       this.handleClick();
       this.limparCampos();
     });
-      // console.log(this.props.usuario.activeUser);
-   
+    // console.log(this.props.usuario.activeUser);
   }
 
   submitSenha() {
@@ -600,42 +607,43 @@ class ProfileManager extends Component {
       auth = false;
     }
     // eslint-disable-next-line
-    if (this.state.editSenhaConfirm == null || this.state.editSenhaConfirm == ""
+    if (
+      this.state.editSenhaConfirm == null ||
+      this.state.editSenhaConfirm == ""
     ) {
       this.setState({ editSenhaConfirmError: true });
       auth = false;
     }
 
-    if (!auth) { 
+    if (!auth) {
       return;
     }
-// eslint-disable-next-line
-    if(this.state.editSenha != this.props.usuario.activeUser.senha) {
+    // eslint-disable-next-line
+    if (this.state.editSenha != this.props.usuario.activeUser.senha) {
       this.snackbarMessage = "Senha atual incorreta";
       this.setState({
-        editSenha: "",
+        editSenha: ""
       });
       this.handleClick();
       return;
     }
-// eslint-disable-next-line
-    if(this.state.editSenhaNew != this.state.editSenhaConfirm) {
+    // eslint-disable-next-line
+    if (this.state.editSenhaNew != this.state.editSenhaConfirm) {
       this.snackbarMessage = "O campo de confirmação da nova senha é diferente";
       this.setState({
-        editSenha: "",
+        editSenha: ""
       });
       this.handleClick();
       return;
     }
-// eslint-disable-next-line
-    if(this.state.editSenhaNew == this.props.usuario.activeUser.senha) {
+    // eslint-disable-next-line
+    if (this.state.editSenhaNew == this.props.usuario.activeUser.senha) {
       this.snackbarMessage = "Nova senha é igual a senha atual";
       this.setState({
-        editSenha: "",
+        editSenha: ""
       });
       this.handleClick();
       return;
-
     }
 
     this.snackbarMessage = "Houve um erro inesperado";
@@ -647,10 +655,9 @@ class ProfileManager extends Component {
       mode: "cors",
       body: JSON.stringify({
         id: this.props.usuario.activeUser.id,
-        senha: this.state.editSenhaNew,
+        senha: this.state.editSenhaNew
       })
     }).then(response => {
-     
       this.snackbarMessage = "Alteração com sucesso";
 
       this.props.usuario.activeUser.senha = this.state.editSenhaNew;

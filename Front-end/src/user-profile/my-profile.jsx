@@ -66,7 +66,7 @@ class MyProfile extends React.Component {
         {value === 0 && <TabContainer><ProfileManager usuario = {this.props.parentState}></ProfileManager></TabContainer>}
         {value === 1 && <TabContainer>tab 2</TabContainer>}
         {!this.props.parentState.activeUser.adm && (value === 2 && <TabContainer>tab 3</TabContainer>)}
-        {this.props.parentState.activeUser.adm && ( value === 2 && <TabContainer><AccessAdm>usuario = {this.props.parentState}</AccessAdm></TabContainer> )}
+        {this.props.parentState.activeUser.adm && ( value === 2 && <TabContainer><AccessAdm usuario = {this.props.parentState}></AccessAdm></TabContainer> )}
         {this.props.parentState.activeUser.adm && (value === 3 && <TabContainer>tab 5</TabContainer>)}
       </div>
     );
