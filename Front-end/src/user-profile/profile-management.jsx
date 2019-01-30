@@ -118,23 +118,14 @@ class ProfileManager extends Component {
     });
   };
 
+  dateConversor = (dateString) => {
+    var p = dateString.split(/\D/g)
+    return [p[2],p[1],p[0] ].join("-")
+    }
+
   render() {
     let dataNasc = "";
-
-    dataNasc += this.props.usuario.activeUser.dataNasc[8];
-    dataNasc += this.props.usuario.activeUser.dataNasc[9];
-
-    dataNasc += "/";
-
-    dataNasc += this.props.usuario.activeUser.dataNasc[5];
-    dataNasc += this.props.usuario.activeUser.dataNasc[6];
-
-    dataNasc += "/";
-
-    dataNasc += this.props.usuario.activeUser.dataNasc[0];
-    dataNasc += this.props.usuario.activeUser.dataNasc[1];
-    dataNasc += this.props.usuario.activeUser.dataNasc[2];
-    dataNasc += this.props.usuario.activeUser.dataNasc[3];
+    dataNasc = this.dateConversor(this.props.usuario.activeUser.dataNasc);
 
     const { classes } = this.props;
 
@@ -551,8 +542,7 @@ class ProfileManager extends Component {
       this.setState({ editEmailError: true });
       editNull = true;
     }
-    // eslint-disable-next-line
-    if (
+    if (    // eslint-disable-next-line
       this.state.editNome == this.props.usuario.activeUser.nome &&
       // eslint-disable-next-line
       this.state.editSobrenome == this.props.usuario.activeUser.sobrenome &&
@@ -609,6 +599,7 @@ class ProfileManager extends Component {
     // eslint-disable-next-line
     if (
       this.state.editSenhaConfirm == null ||
+      // eslint-disable-next-line
       this.state.editSenhaConfirm == ""
     ) {
       this.setState({ editSenhaConfirmError: true });

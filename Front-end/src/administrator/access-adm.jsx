@@ -259,6 +259,12 @@ class AccessAdm extends React.Component {
     openDialog: false
   };
 
+  dateConversor = (dateString) => {
+    var p = dateString.split(/\D/g)
+    return [p[2],p[1],p[0] ].join("-")
+    }
+    
+
   constructor(props) {
     super(props);
     this.populateTable();
@@ -309,7 +315,7 @@ class AccessAdm extends React.Component {
                 element.nome,
                 element.sobrenome,
                 element.email,
-                element.dataNasc,
+                this.dateConversor(element.dataNasc),
                 auth
               )
             );
