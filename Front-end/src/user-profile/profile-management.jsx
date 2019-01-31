@@ -133,7 +133,7 @@ class ProfileManager extends Component {
       <div className="userProfile" id="usrProfile">
         <Snackbar
           style={{
-            height: "25px" /* backgroundColor: "rgba(50, 204, 19, 0.89)" */
+            height: "25px" 
           }}
           anchorOrigin={{
             vertical: "bottom",
