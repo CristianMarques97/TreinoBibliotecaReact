@@ -280,8 +280,8 @@ class BaseWindow extends Component {
   };
 
   navigateHome() {
-   this.history.replace("/home");
-   this.handleMenuClose();
+    this.history.replace("/home");
+    this.handleMenuClose();
   }
 
   // render screen
@@ -643,13 +643,13 @@ class BaseWindow extends Component {
 
                 <span id="infoUserName">{this.userName}</span>
               </div>
-              <Divider/>
+              <Divider />
               <div className="drawerOptions">
                 <MenuItem onClick={() => this.history.replace("/home")}>
-                  User Name
+                  Perfil
                 </MenuItem>
-                <MenuItem>Perfil</MenuItem>
-                <MenuItem>Opções</MenuItem>
+                <MenuItem>Acervo</MenuItem>
+                <MenuItem>Suporte</MenuItem>
               </div>
               <MenuItem onClick={() => this.logoff()}>Sair</MenuItem>
             </div>
@@ -821,13 +821,13 @@ class BaseWindow extends Component {
           password: ""
         });
 
-        if(conteudo.profileIconDecoded != null){
+        if (conteudo.profileIconDecoded != null) {
           this.setState({
-            hasProfileIcon: true,
+            hasProfileIcon: true
           });
         } else {
           this.setState({
-            hasProfileIcon: false,
+            hasProfileIcon: false
           });
         }
         this.handleClose();
@@ -835,7 +835,7 @@ class BaseWindow extends Component {
       })
       .catch(error => {
         console.log(error);
-        
+
         let errorMsg = "";
         // eslint-disable-next-line
         if (error == "TypeError: Failed to fetch")
@@ -848,8 +848,7 @@ class BaseWindow extends Component {
         // eslint-disable-next-line
         else if (error == "SyntaxError: Unexpected end of JSON input") {
           errorMsg = "e-mail ou senha inválidos";
-        }
-        else {
+        } else {
           errorMsg = "houve um erro inesperado";
         }
 
@@ -858,7 +857,7 @@ class BaseWindow extends Component {
           password: "",
           errorMessage: errorMsg,
           auth: false,
-          activeUser: conteudo,
+          activeUser: conteudo
         });
 
         this.handleErrorDialogOpen();
@@ -1002,7 +1001,7 @@ class BaseWindow extends Component {
           this.setState({
             auth: !this.state.auth,
             activeUser: conteudo,
-            hasProfileIcon: false,
+            hasProfileIcon: false
           });
           this.handleCreateDialogOpen();
           this.limparCampos();

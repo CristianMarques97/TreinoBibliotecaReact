@@ -259,11 +259,10 @@ class AccessAdm extends React.Component {
     openDialog: false
   };
 
-  dateConversor = (dateString) => {
-    var p = dateString.split(/\D/g)
-    return [p[2],p[1],p[0] ].join("-")
-    }
-    
+  dateConversor = dateString => {
+    var p = dateString.split(/\D/g);
+    return [p[2], p[1], p[0]].join("-");
+  };
 
   constructor(props) {
     super(props);
@@ -522,6 +521,15 @@ class AccessAdm extends React.Component {
     );
   }
 
+  // Checa se quando solicitada uma ação, há usuários selecionados
+  checkSelected() {
+    if (this.state.selected.length < 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   authEspecialAccess() {
     console.log(this.state.data);
 
@@ -538,6 +546,12 @@ class AccessAdm extends React.Component {
         }
       }
     });
+
+    if (!this.checkSelected()) {
+      this.snackbarMessage = "Selecione pelo menos um usuário para alterar o nível acesso";
+      this.handleSnackClick();
+      return;
+    }
 
     if (ok) {
       fetch("http://localhost:8080/library/management/manager/adm-auth", {
@@ -585,6 +599,12 @@ class AccessAdm extends React.Component {
       }
     });
 
+    if (!this.checkSelected()) {
+      this.snackbarMessage = "Selecione pelo menos um usuário para alterar o nível acesso";
+      this.handleSnackClick();
+      return;
+    }
+    
     if (ok) {
       fetch("http://localhost:8080/library/management/manager/adm-unauth", {
         method: "POST",
