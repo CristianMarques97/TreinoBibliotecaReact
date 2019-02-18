@@ -27,7 +27,7 @@ public class Livro implements Serializable {
 	private String nome;
 
 	@Column(columnDefinition = "date")
-	private Date lancamento;
+	private Date ano;
 
 	@Column(unique = true, columnDefinition = "text")
 	private String editora;
@@ -35,8 +35,8 @@ public class Livro implements Serializable {
 	@Column(columnDefinition = "integer")
 	private int numero_paginas;
 
-	@Column(columnDefinition = "boolean")
-	private boolean alugado;
+	@Column(columnDefinition = "integer")
+	private int qtde;
 
 	public int getId() {
 		return id;
@@ -52,14 +52,6 @@ public class Livro implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public Date getLancamento() {
-		return lancamento;
-	}
-
-	public void setLancamento(Date lancamento) {
-		this.lancamento = lancamento;
 	}
 
 	public String getEditora() {
@@ -78,12 +70,22 @@ public class Livro implements Serializable {
 		this.numero_paginas = numero_paginas;
 	}
 
-	public boolean isAlugado() {
-		return alugado;
+	public Date getAno() {
+		return ano;
 	}
 
-	public void setAlugado(boolean alugado) {
-		this.alugado = alugado;
+	public void setAno(Date ano) {
+		this.ano = ano;
 	}
+
+	public int getQtde() {
+		return qtde;
+	}
+
+	public void setQtde(int qtde) {
+		this.qtde = qtde;
+	}
+
+	
 
 }

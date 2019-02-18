@@ -15,7 +15,10 @@
     "react-scripts": "^2.1.3",
     "react-swipeable-views": "^0.13.0",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "react-autosuggest": "latest",
+    "prop-types": "latest",
+    "autosuggest-highlight": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

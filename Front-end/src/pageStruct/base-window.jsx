@@ -2,6 +2,7 @@ import "./base-window.css";
 import MyProfile from "../user-profile/my-profile";
 import UnauthHome from "../apresentation/unauth-home";
 import BottomNavigation from "./Bottom-navigation";
+import PageNotFound from "../not-found";
 
 import classNames from "classnames";
 import React, { Component } from "react";
@@ -17,11 +18,14 @@ import Button from "@material-ui/core/Button";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { fade } from "@material-ui/core/styles/colorManipulator";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Zoom from "@material-ui/core/Zoom";
@@ -39,13 +43,95 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import PageNotFound from "../not-found";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+
+import deburr from "lodash/deburr";
+import Autosuggest from "react-autosuggest";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
+import PropTypes from "prop-types";
+import Livros from "../model/books";
+
+
+let suggestions = [];
+
+function renderInputComponent(inputProps) {
+  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+
+  return (
+    <TextField
+      InputProps={{
+        inputRef: node => {
+          ref(node);
+          inputRef(node);
+        },
+        classes: {
+          input: classes.input
+        }
+      }}
+      {...other}
+    />
+  );
+}
+
+function renderSuggestion(suggestion, { query, isHighlighted }) {
+  const matches = match(suggestion, query);
+  const parts = parse(suggestion, matches);
+
+  return (
+    <MenuItem selected={isHighlighted} component="div">
+      <div>
+        {parts.map((part, index) =>
+          part.highlight ? (
+            <span key={String(index)} style={{ fontWeight: 500 }}>
+              {part.text}
+            </span>
+          ) : (
+            <strong key={String(index)} style={{ fontWeight: 300 }}>
+              {part.text}
+            </strong>
+          )
+        )}
+      </div>
+    </MenuItem>
+  );
+}
+
+function getSuggestions(value) {
+  const inputValue = deburr(value.trim()).toLowerCase();
+  const inputLength = inputValue.length;
+  let count = 0;
+
+  return inputLength === 0
+    ? []
+    : suggestions.filter(suggestion => {
+        const keep =
+          count < 5 &&
+          suggestion.slice(0, inputLength).toLowerCase() === inputValue;
+
+        if (keep) {
+          count += 1;
+        }
+
+        return keep;
+      });
+}
+
+function getSuggestionValue(suggestion) {
+  return suggestion;
+}
 
 // Styles
 
 const styles = theme => ({
   root: {
     width: "100%"
+  },
+  margin: {
+    margin: theme.spacing.unit
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -170,12 +256,53 @@ const styles = theme => ({
   botttomNavigation: {
     height: "25%",
     width: "100%"
+  },
+  suggestionsContainerOpen: {
+    position: "absolute",
+    zIndex: 1,
+    marginTop: theme.spacing.unit,
+    left: 0,
+    right: 0
+  },
+  suggestion: {
+    display: "block"
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: "none"
+  },
+  divider: {
+    height: theme.spacing.unit * 2
   }
 });
 
 /************************************************************************************************/
 
 class BaseWindow extends Component {
+  repoUpdate() {
+    fetch("http://localhost:8080/library/collection/book/book-search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        nome: this.state.popper
+      })
+    })
+      .then(json => {
+        return json.json();
+      })
+      .then(response => {
+        suggestions = [];
+        let element = response;
+        console.log(element);
+        for (let i = 0; i < element.length; i++) {
+          suggestions.push(element[i].nome);
+        }
+      });
+  }
   history = createHashHistory();
   // propiedades
   livrosAlugados = 0;
@@ -193,7 +320,7 @@ class BaseWindow extends Component {
       password: "",
       emptyForm: false,
       emptyFormPass: false,
-      usuarioAtivo: null,
+      showPassword: false,
       activeUser: null,
       errorMessage: "",
 
@@ -223,8 +350,13 @@ class BaseWindow extends Component {
       openLoginDialog: false,
       openLoginErrorDialog: false,
       openLogoffDialog: false,
-      createDialogOpen: false
+      createDialogOpen: false,
+      single: "",
+      popper: "",
+      suggestions: []
     };
+
+    this.repoUpdate();
 
     if (!this.state.auth) this.history.replace("/");
 
@@ -233,6 +365,30 @@ class BaseWindow extends Component {
   }
 
   // handlers
+
+  handleSuggestionsFetchRequested = ({ value }) => {
+    this.setState({
+      suggestions: getSuggestions(value)
+    });
+  };
+
+  handleClickShowPassword = () => {
+    this.setState({ showPassword: !this.state.showPassword });
+  };
+
+  handleSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  };
+
+  handleChange = name => (event, { newValue }) => {
+    this.setState(
+      {
+        [name]: newValue
+      },
+    );
+  };
 
   handleCreateDialogOpen = () => {
     this.setState({ createDialogOpen: !this.state.createDialogOpen });
@@ -291,6 +447,14 @@ class BaseWindow extends Component {
     const { classes } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const autosuggestProps = {
+      renderInputComponent,
+      suggestions: this.state.suggestions,
+      onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
+      onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
+      getSuggestionValue,
+      renderSuggestion
+    };
 
     const renderMenu = (
       <Menu
@@ -370,20 +534,50 @@ class BaseWindow extends Component {
             >
               Biblioteca - Controle de empréstimos e dados cadastrais
             </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <Input
-                placeholder="Search…"
-                disableUnderline
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-              />
-            </div>
+            <SearchIcon style={{marginLeft: "15px", marginRight: "-15px"}} />
 
+            <div className={classes.search}>
+              <Autosuggest
+                {...autosuggestProps}
+                inputProps={{
+                  classes,
+                  placeholder: "Buscar Livro",
+                  value: this.state.popper,
+                  onChange: this.handleChange("popper"),
+                  onKeyPress: (event) => this.searchBook(event),
+                  inputRef: node => {
+                    this.popperNode = node;
+                  },
+                  InputLabelProps: {
+                    shrink: true
+                  }
+                }}
+                theme={{
+                  suggestionsList: classes.suggestionsList,
+                  suggestion: classes.suggestion
+                }}
+                renderSuggestionsContainer={options => (
+                  <Popper
+                    anchorEl={this.popperNode}
+                    open={Boolean(options.children)}
+                  >
+                    <Paper
+                      square
+                      {...options.containerProps}
+                      style={{
+                        width: this.popperNode
+                          ? this.popperNode.clientWidth
+                          : null
+                      }}
+                    >
+                      {options.children}
+                    </Paper>
+                  </Popper>
+                )}
+              />
+           
+            </div>
+            <Button onClick= {() => this.bookSearchNav()} color="inherit">Procurar</Button>
             <div className={classes.grow} />
             {this.state.auth && (
               <div className={classes.sectionDesktop}>
@@ -686,20 +880,37 @@ class BaseWindow extends Component {
                 }}
               />
               <br />
-
-              <TextField
+              <FormControl
+              className={classNames(classes.margin, classes.textField)}
+            >
+              <InputLabel htmlFor="passConfirm">Senha:</InputLabel>
+              <Input
                 error={this.state.emptyFormPass}
                 id="userPassword"
                 label="Senha:"
                 className={classes.textField}
                 value={this.state.password}
-                type="password"
+                type={this.state.showPassword ? "text" : "password"}
                 onChange={event => {
                   this.setState({
                     emptyFormPass: false,
                     password: event.target.value
                   });
                 }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={this.handleClickShowPassword}
+                    >
+                      {this.state.showPassword ? (
+                        <Visibility />
+                      ) : (
+                        <VisibilityOff />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
                 margin="normal"
                 onKeyPress={event => {
                   if (event.key === "Enter") {
@@ -707,6 +918,7 @@ class BaseWindow extends Component {
                   }
                 }}
               />
+            </FormControl>
               <br />
               <Button
                 variant="contained"
@@ -744,6 +956,10 @@ class BaseWindow extends Component {
             <Router basename="/#">
               <Switch>
                 <Route exact path="/" component={UnauthHome} />
+                <Route
+                  path="/book/:auth/:name"
+                  component = {Livros}
+                />
                 <Route path="*" component={PageNotFound} />
               </Switch>
             </Router>
@@ -752,11 +968,15 @@ class BaseWindow extends Component {
             <Router basename="/#">
               <Switch>
                 <Route exact path="/" component={UnauthHome} />
+                 {/* Passa a informação para o filho(Forma alternativa ao redux) */}
                 <Route
                   path="/home"
                   render={() => <MyProfile parentState={this.state} />}
-                />{" "}
-                {/* Passa a informação para o filho(Forma alternativa ao redux) */}
+                />
+                    <Route
+                  path="/book/:auth/:name"
+                  component = {Livros}
+                />
                 <Route path="*" component={PageNotFound} />
               </Switch>
             </Router>
@@ -886,7 +1106,7 @@ class BaseWindow extends Component {
   logoff() {
     this.setState({
       auth: !this.state.auth,
-      usuarioAtivo: null
+      activeUser: null,
     });
 
     this.handleLogoffDialogClose();
@@ -1031,6 +1251,31 @@ class BaseWindow extends Component {
       return;
     }
   }
+
+  searchBook(event){ 
+    if (event.key === "Enter") {
+     this.bookSearchNav();
+    }
+  }
+
+  bookSearchNav() {
+    // eslint-disable-next-line
+    if(this.state.popper == "")
+    return;
+    let auth = "";
+    if(this.state.activeUser != null) auth = this.state.activeUser.id;
+    else auth = "no-user";
+    this.forceUpdate();
+    this.history.replace({
+      pathname: "/book/" + auth + "/" + this.state.popper,
+      state: this.state,
+    });
+  }
+
 }
+
+BaseWindow.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(BaseWindow);

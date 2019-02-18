@@ -1,0 +1,47 @@
+#book-info {
+    height: 10px;
+    padding: 20px;
+    width: 50%;
+    
+}
+
+#book-info-avatar {
+    height: 10px;
+    padding: 20px;
+    width: 50%;
+    text-align: center;
+
+    
+}
+
+#book-info-label {
+    display: inline-block;
+    width: 40%;
+    font-size: 19px;
+
+}
+
+#book-info-avatar  #book-info-name {
+    margin-left: -24%
+}
+
+#avatarIcon {
+    background-color: red;
+    width: 15%;
+    color: #fff;
+    margin-left: 30%;
+}
+
+#alugar {
+    margin-left: 10.5%;
+    margin-top: 30px;
+}
+
+#book-info-name {
+    font-weight:bold;
+    display: inline-block;
+    font-size: 19px;
+    width: 50%;
+    
+
+}
