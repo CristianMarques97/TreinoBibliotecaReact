@@ -14,7 +14,11 @@ public class HttpReturnException extends Exception {
 	public static final int OK = 200;
 	public static final int CONFLICT = 409;
 	public static final int NOT_FOUND = 404;
+	public static final int NO_CONTENT = 204;
+	public static final int INTERNAL_SERVER_ERROR = 500;
 
+	public static final String SQL_ERR_01 = "Não possui nenhum aluguel de livro";
+	
 	private int status_code;
 	private HttpStatus status;
 	private String message;

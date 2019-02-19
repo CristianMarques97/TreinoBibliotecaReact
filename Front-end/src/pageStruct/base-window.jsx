@@ -54,6 +54,7 @@ import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import PropTypes from "prop-types";
 import Livros from "../model/books";
+import Bookcollection from "../model/book-collection"
 
 
 let suggestions = [];
@@ -839,10 +840,10 @@ class BaseWindow extends Component {
               </div>
               <Divider />
               <div className="drawerOptions">
-                <MenuItem onClick={() => this.history.replace("/home")}>
+                <MenuItem onClick={() => this.menuNav("/home")}>
                   Perfil
                 </MenuItem>
-                <MenuItem>Acervo</MenuItem>
+                <MenuItem onClick = {() => this.menuNav("/book-collection")}>Acervo</MenuItem>
                 <MenuItem>Suporte</MenuItem>
               </div>
               <MenuItem onClick={() => this.logoff()}>Sair</MenuItem>
@@ -972,6 +973,10 @@ class BaseWindow extends Component {
                 <Route
                   path="/home"
                   render={() => <MyProfile parentState={this.state} />}
+                />
+                 <Route
+                  path="/book-collection"
+                  render={() => <Bookcollection userState={this.state.activeUser} />}
                 />
                     <Route
                   path="/book/:auth/:name"
@@ -1270,6 +1275,11 @@ class BaseWindow extends Component {
       pathname: "/book/" + auth + "/" + this.state.popper,
       state: this.state,
     });
+  }
+
+  menuNav(url) {
+    this.handleClose();
+    this.history.replace(url);
   }
 
 }

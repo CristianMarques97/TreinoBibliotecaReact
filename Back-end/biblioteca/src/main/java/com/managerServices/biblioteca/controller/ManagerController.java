@@ -1,6 +1,7 @@
 package com.managerServices.biblioteca.controller;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Calendar;
@@ -27,6 +28,7 @@ import com.managerServices.biblioteca.dao.repository.RentRepository;
 import com.managerServices.biblioteca.dao.repository.UserEditRepository;
 import com.managerServices.biblioteca.dao.repository.UserRepository;
 import com.managerServices.biblioteca.dto.AluguelLivros;
+import com.managerServices.biblioteca.dto.AluguelLivrosKey;
 import com.managerServices.biblioteca.dto.AuthChangeRequest;
 import com.managerServices.biblioteca.dto.AuthRequest;
 import com.managerServices.biblioteca.dto.AvatarImage;
@@ -38,6 +40,7 @@ import com.managerServices.biblioteca.dto.LoginRequest;
 import com.managerServices.biblioteca.dto.UserEdit;
 import com.managerServices.biblioteca.dto.Usuario;
 import com.managerServices.biblioteca.exception.HttpReturnException;
+import com.managerServices.biblioteca.service.DataBaseService;
 //import com.managerServices.biblioteca.service.DataBaseService;
 
 @RestController
@@ -46,8 +49,8 @@ public class ManagerController {
 
 	private static final Logger log = LoggerFactory.getLogger(ManagerController.class);
 
-//	@Autowired
-//	private DataBaseService service;
+	@Autowired
+	private DataBaseService service;
 
 	@Autowired
 	private UserRepository repo;
@@ -203,6 +206,15 @@ public class ManagerController {
 		return livroRepo.findBookSearch(book.getNome());
 
 	}
+	
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET })
+	@GetMapping("/collection/book/return-all-book")
+	public List<Livro> findBookByName() {
+		log.info("Request: {}", "find book: " + "All Books");
+
+		return livroRepo.findAll();
+
+	}
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/collection/book/return-book")
@@ -225,14 +237,30 @@ public class ManagerController {
 
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST }) 
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.PUT })
+	@PostMapping("/collection/user/my-rents")
+	public Object findUserRent(@RequestBody AluguelLivrosKey id) throws HttpReturnException {
+		log.info("Request: {}", "find book: ");
+		try {
+
+			return service.findRent(id.getId_cliente());
+		} catch (SQLException e) {
+			throw new HttpReturnException(HttpReturnException.NO_CONTENT, HttpStatus.NO_CONTENT, e.getMessage());
+		} catch (Exception e) {
+			throw new HttpReturnException(HttpReturnException.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+
+	}
+
+	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/collection/user/rent-book")
-	public HttpReturn rentBook(@RequestBody AluguelLivros rent) throws Exception{
+	public HttpReturn rentBook(@RequestBody AluguelLivros rent) throws Exception {
 		log.info("Request: {}", "Rent book: ");
 
 		try {
 			if (rentRepo.findById(rent.getId_cliente(), rent.getId_livro()) != null)
-				throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT, "Este livro já foi alugado");
+				throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT,
+						"Este livro já foi alugado");
 			Livro livro = livroRepo.findById(rent.getId_livro()).get();
 
 			if (livro.getQtde() > 0) {
