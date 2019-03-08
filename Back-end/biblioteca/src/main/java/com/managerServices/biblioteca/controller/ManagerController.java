@@ -116,9 +116,12 @@ public class ManagerController {
 
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.POST })
 	@PostMapping("/user/manager/login")
-	public Usuario login(@RequestBody LoginRequest request) {
+	public Usuario login(@RequestBody LoginRequest request) throws HttpReturnException {
 		log.info("Request: {}", "Login");
 		Usuario user = repo.findByEmailAndSenha(request.getEmail(), request.getSenha());
+		if(user == null)
+			throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT, "e-mail ou senha inválidos");
+		
 		if (user.getProfile_icon() == null) {
 			return user;
 		} else {
@@ -212,7 +215,7 @@ public class ManagerController {
 	public List<Livro> findBookByName() {
 		log.info("Request: {}", "find book: " + "All Books");
 
-		return livroRepo.findAll();
+		return livroRepo.findAllByOrderByNome();
 
 	}
 
@@ -228,7 +231,7 @@ public class ManagerController {
 	@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.PUT })
 	@PutMapping("/collection/user/autenticate")
 	public Object autenticateUser(@RequestBody AuthRequest request) throws HttpReturnException {
-		log.info("Request: {}", "find book: ");
+		log.info("Request: {}", "autenticate book rent: ");
 		Usuario usuario = repo.findByIdAndSenha(request.getId(), request.getSenha());
 		if (usuario != null)
 			return usuario;

@@ -1,14 +1,11 @@
 import "./base-window.css";
-import MyProfile from "../user-profile/my-profile";
-import UnauthHome from "../apresentation/unauth-home";
 import BottomNavigation from "./Bottom-navigation";
-import PageNotFound from "../not-found";
 
 import classNames from "classnames";
 import React, { Component } from "react";
 import { createHashHistory } from "history";
 import { withStyles } from "@material-ui/core/styles";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router,} from "react-router-dom";
 
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -53,8 +50,9 @@ import parse from "autosuggest-highlight/parse";
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import PropTypes from "prop-types";
-import Livros from "../model/books";
-import Bookcollection from "../model/book-collection"
+import UserRoutes from "../routes/user-routes";
+import PublicRoutes from "../routes/public-routes";
+
 
 
 let suggestions = [];
@@ -305,6 +303,7 @@ class BaseWindow extends Component {
       });
   }
   history = createHashHistory();
+
   // propiedades
   livrosAlugados = 0;
   qtdeAlert = 0;
@@ -316,6 +315,7 @@ class BaseWindow extends Component {
 
     this.state = {
       hasProfileIcon: false,
+      footerVisible: true,
       // login form
       email: "",
       password: "",
@@ -357,6 +357,7 @@ class BaseWindow extends Component {
       suggestions: []
     };
 
+    
     this.repoUpdate();
 
     if (!this.state.auth) this.history.replace("/");
@@ -955,43 +956,20 @@ class BaseWindow extends Component {
         <div className={classes.pageContent}>
           {!this.state.auth && (
             <Router basename="/#">
-              <Switch>
-                <Route exact path="/" component={UnauthHome} />
-                <Route
-                  path="/book/:auth/:name"
-                  component = {Livros}
-                />
-                <Route path="*" component={PageNotFound} />
-              </Switch>
+             <PublicRoutes/>
             </Router>
           )}
           {this.state.auth && (
             <Router basename="/#">
-              <Switch>
-                <Route exact path="/" component={UnauthHome} />
-                 {/* Passa a informação para o filho(Forma alternativa ao redux) */}
-                <Route
-                  path="/home"
-                  render={() => <MyProfile parentState={this.state} />}
-                />
-                 <Route
-                  path="/book-collection"
-                  render={() => <Bookcollection userState={this.state.activeUser} />}
-                />
-                    <Route
-                  path="/book/:auth/:name"
-                  component = {Livros}
-                />
-                <Route path="*" component={PageNotFound} />
-              </Switch>
+              <UserRoutes superState = {this.state}/>
             </Router>
           )}
         </div>
 
-        <footer style={{ marginTop: "80px" }}>
+        {!this.state.auth && (<footer id= "rodape">
           <Divider />
           <BottomNavigation className={classes.botttomNavigation} />
-        </footer>
+        </footer>)}
       </div>
     );
   }
@@ -1038,6 +1016,11 @@ class BaseWindow extends Component {
       })
       .then(jsonResponse => {
         conteudo = jsonResponse;
+        
+        // eslint-disable-next-line
+        if(conteudo.status_code == 409)
+          throw conteudo.message;
+        
 
         this.setState({
           auth: !this.state.auth,
@@ -1064,17 +1047,9 @@ class BaseWindow extends Component {
         let errorMsg = "";
         // eslint-disable-next-line
         if (error == "TypeError: Failed to fetch")
-          // eslint-disable-next-line
           errorMsg = "Erro No servidor tente novamente mais tarde";
-        // eslint-disable-next-line
-        else if (error == "TypeError: Cannot read property '0' of undefined") {
-          errorMsg = "e-mail ou senha inválidos";
-        }
-        // eslint-disable-next-line
-        else if (error == "SyntaxError: Unexpected end of JSON input") {
-          errorMsg = "e-mail ou senha inválidos";
-        } else {
-          errorMsg = "houve um erro inesperado";
+       else {
+          errorMsg = error;
         }
 
         this.setState({

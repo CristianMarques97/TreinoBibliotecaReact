@@ -32,7 +32,7 @@ const styles = theme => ({
   }
 });
 
-class Livros extends React.Component {
+class BookLibrary extends React.Component {
   state = {
     auth: true,
     passError: false,
@@ -47,24 +47,15 @@ class Livros extends React.Component {
   };
 
   errorMessage = "";
-  hasLogon = false;
-  userId = "";
 
   history = createHashHistory();
   constructor(props) {
     super(props);
     this.nome = "";
-    this.findBook(this.props.match.params.name);
-
-    if (this.props.match.params.auth !== "no-user") {
-      this.handleLogonState();
-      this.userId = this.props.match.params.auth;
-    }
   }
-
-  handleLogonState = () => {
-    this.hasLogon = !this.hasLogon;
-  };
+  componentDidMount() {
+    this.returnBook(this.props.book);
+  }
 
   handleClickShowPassword = () => {
     this.setState({ showPassword: !this.state.showPassword });
@@ -179,9 +170,8 @@ class Livros extends React.Component {
                     pass: event.target.value
                   });
                 }}
-                onKeyPress = {event => {
-                  if(event.key === "Enter")
-                      this.authUser();
+                onKeyPress={event => {
+                  if (event.key === "Enter") this.authUser();
                 }}
                 endAdornment={
                   <InputAdornment position="end">
@@ -223,7 +213,7 @@ class Livros extends React.Component {
             </Typography>
           </div>
         )}
-        {this.state.onUpdate && (
+         {this.state.onUpdate && (
           <div id="book-info" style={{ height: "100px" }}>
             <Typography id="book-info-label"> Código do Livro:</Typography>
             <Typography id="book-info-name">{this.state.livro.id}</Typography>
@@ -241,15 +231,15 @@ class Livros extends React.Component {
             <Typography id="book-info-label">
               Quantidade de páginas:{" "}
             </Typography>
-            <Typography id="book-info-name">{this.state.livro.qtde}</Typography>
+            <Typography id="book-info-name">{this.state.livro.numero_paginas}</Typography>
           </div>
         )}
 
-        {this.hasLogon && (
+        {this.state.onUpdate && 
           <div id="alugar">
-            <Button onClick={() => this.handleLoginDialog()}>Alugar</Button>
+            <Button id="btnAlugar" onClick={() => this.handleLoginDialog()} disabled = {this.state.livro.qtde < 1}>{this.state.livro.qtde > 0 ? "Alugar" : "Esgotado"}</Button>
           </div>
-        )}
+        }
       </div>
     );
   }
@@ -259,24 +249,6 @@ class Livros extends React.Component {
     return [p[2], p[1], p[0]].join("-");
   };
 
-  componentWillReceiveProps(nextProps) {
-    // eslint-disable-next-line
-    if (this.props.match.params.name != nextProps.match.params.name) {
-      let query = nextProps.match.params.name;
-      this.setState(
-        {
-          onUpdate: false
-        },
-        this.findBook(query)
-      );
-      this.forceUpdate();
-    }
-    // eslint-disable-next-line
-    if (this.props.match.params.id != nextProps.match.params.id) {
-      this.userId = nextProps.match.params.id;
-    }
-  }
-
   authUser() {
     fetch("http://localhost:8080/library/collection/user/autenticate", {
       method: "PUT",
@@ -285,7 +257,7 @@ class Livros extends React.Component {
       },
       mode: "cors",
       body: JSON.stringify({
-        id: this.userId,
+        id: this.props.userState.id,
         senha: this.state.pass
       })
     })
@@ -302,8 +274,8 @@ class Livros extends React.Component {
       .then(response => {
         this.rentBook();
         this.setState({
-          pass: "",
-        })
+          pass: ""
+        });
       })
       .catch(json => {
         this.setState({
@@ -313,32 +285,11 @@ class Livros extends React.Component {
       });
   }
 
-  findBook(bookName) {
-    this.handleLoginDialog();
-    fetch("http://localhost:8080/library/collection/book/return-book", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      mode: "cors",
-      body: JSON.stringify({
-        nome: bookName
-      })
-    })
-      .then(json => {
-        return json.json();
-      })
-      .then(response => {
-        console.log(response);
-        this.setState({
-          livro: response,
-          onUpdate: true
-        });
-      })
-      .catch(json => {
-        this.nome = "Livro Não encontrado";
-        this.forceUpdate();
-      });
+  returnBook(book) {
+    this.setState({
+      livro: this.props.book,
+      onUpdate: true
+    });
   }
 
   rentError;
@@ -352,7 +303,7 @@ class Livros extends React.Component {
       },
       mode: "cors",
       body: JSON.stringify({
-        id_cliente: this.userId,
+        id_cliente: this.props.userState.id,
         id_livro: this.state.livro.id
       })
     })
@@ -364,6 +315,16 @@ class Livros extends React.Component {
           });
           throw json;
         }
+
+        let livro =  this.state.livro;
+        livro.qtde--;
+
+        this.setState({
+          livro: livro,
+        });
+        let btn = document.getElementById("btnAlugar");
+        btn.textContent = "Esgotado";
+        btn.disabled = true
         this.handleAlertDialog();
       })
       .catch(json => {
@@ -372,8 +333,8 @@ class Livros extends React.Component {
   }
 }
 
-Livros.propTypes = {
+BookLibrary.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Livros);
+export default withStyles(styles)(BookLibrary);
