@@ -1,5 +1,7 @@
 import React from "react";
 import classNames from "classnames";
+import * as URLs from "../constants/url-constants";
+
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -291,7 +293,7 @@ class AccessAdm extends React.Component {
     this.setState({
       data: []
     });
-    fetch("http://localhost:8080/library/management/manager/manage-access", {
+    fetch(URLs.LibraryURL + "management/manager/manage-access", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -554,7 +556,7 @@ class AccessAdm extends React.Component {
     }
 
     if (ok) {
-      fetch("http://localhost:8080/library/management/manager/adm-auth", {
+      fetch(URLs.LibraryURL + "management/manager/adm-auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -606,7 +608,7 @@ class AccessAdm extends React.Component {
     }
     
     if (ok) {
-      fetch("http://localhost:8080/library/management/manager/adm-unauth", {
+      fetch(URLs.LibraryURL + "management/manager/adm-unauth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -645,7 +647,7 @@ class AccessAdm extends React.Component {
     this.setState({
       openDialog: false
     });
-    fetch("http://localhost:8080/library/management/manager/remove-user", {
+    fetch(URLs.LibraryURL + "management/manager/remove-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

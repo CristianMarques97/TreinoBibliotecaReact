@@ -1,5 +1,5 @@
 import React from "react";
-
+import * as URLs from "../constants/url-constants";
 import { Avatar } from "@material-ui/core";
 import Book from "@material-ui/icons/Book";
 import Dialog from "@material-ui/core/Dialog";
@@ -250,7 +250,7 @@ class BookLibrary extends React.Component {
   };
 
   authUser() {
-    fetch("http://localhost:8080/library/collection/user/autenticate", {
+    fetch(URLs.LibraryURL + "collection/user/autenticate", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -296,7 +296,7 @@ class BookLibrary extends React.Component {
 
   rentBook() {
     this.handleLoginDialog();
-    fetch("http://localhost:8080/library/collection/user/rent-book", {
+    fetch(URLs.LibraryURL + "collection/user/rent-book", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

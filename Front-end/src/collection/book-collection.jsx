@@ -3,6 +3,7 @@ import BookLibrary from "./books-library";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import * as URLs from "../constants/url-constants";
 import "./book.css";
 
 const styles = theme => ({
@@ -49,7 +50,7 @@ class Bookcollection extends React.Component {
   }
 
   findAllBook() {
-    fetch("http://localhost:8080/library/collection/book/return-all-book", {
+    fetch(URLs.LibraryURL + "collection/book/return-all-book", {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

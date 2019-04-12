@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import * as URLs from "../constants/url-constants";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -464,7 +465,7 @@ class ProfileManager extends Component {
   }
 
   removeAvatar() {
-    fetch("http://localhost:8080/library/user/manager/image-edit", {
+    fetch(URLs.LibraryURL + "user/manager/image-edit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -489,7 +490,7 @@ class ProfileManager extends Component {
       anchorEl: null,
       openDialog: false
     });
-    fetch("http://localhost:8080/library/user/manager/image-edit", {
+    fetch(URLs.LibraryURL + "user/manager/image-edit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -558,7 +559,7 @@ class ProfileManager extends Component {
       return;
     }
     this.snackbarMessage = "Houve um erro inesperado";
-    fetch("http://localhost:8080/library/user/manager/edit-info", {
+    fetch(URLs.LibraryURL + "user/manager/edit-info", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -638,7 +639,7 @@ class ProfileManager extends Component {
     }
 
     this.snackbarMessage = "Houve um erro inesperado";
-    fetch("http://localhost:8080/library/user/manager/password-change", {
+    fetch(URLs.LibraryURL + "user/manager/password-change", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

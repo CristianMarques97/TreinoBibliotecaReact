@@ -1,5 +1,6 @@
 import "./base-window.css";
 import BottomNavigation from "./Bottom-navigation";
+import * as URLs from "../constants/url-constants";
 
 import classNames from "classnames";
 import React, { Component } from "react";
@@ -280,7 +281,7 @@ const styles = theme => ({
 
 class BaseWindow extends Component {
   repoUpdate() {
-    fetch("http://localhost:8080/library/collection/book/book-search", {
+    fetch(URLs.LibraryURL + "collection/book/book-search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1000,7 +1001,7 @@ class BaseWindow extends Component {
     // busca na base de dados
     let conteudo = null;
 
-    fetch("http://localhost:8080/library/user/manager/login/", {
+    fetch(URLs.LibraryURL + "user/manager/login/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1018,7 +1019,7 @@ class BaseWindow extends Component {
         conteudo = jsonResponse;
         
         // eslint-disable-next-line
-        if(conteudo.status_code == 409)
+        if(conteudo.status_code == 409 || conteudo.status_code == 404 || conteudo.status_code == 500)
           throw conteudo.message;
         
 
@@ -1178,7 +1179,7 @@ class BaseWindow extends Component {
 
       let conteudo = null;
 
-      fetch("http://localhost:8080/library/user/manager/new/", {
+      fetch(URLs.LibraryURL + "user/manager/new/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -120,7 +120,7 @@ public class ManagerController {
 		log.info("Request: {}", "Login");
 		Usuario user = repo.findByEmailAndSenha(request.getEmail(), request.getSenha());
 		if(user == null)
-			throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT, "e-mail ou senha inválidos");
+			throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT, "e-mail ou senha invÃ¡lidos");
 		
 		if (user.getProfile_icon() == null) {
 			return user;
@@ -236,7 +236,7 @@ public class ManagerController {
 		if (usuario != null)
 			return usuario;
 
-		throw new HttpReturnException(HttpReturnException.NOT_FOUND, HttpStatus.NOT_FOUND, "Usuário/Senha incorreta");
+		throw new HttpReturnException(HttpReturnException.NOT_FOUND, HttpStatus.NOT_FOUND, "Usuï¿½rio/Senha incorreta");
 
 	}
 
@@ -263,7 +263,7 @@ public class ManagerController {
 		try {
 			if (rentRepo.findById(rent.getId_cliente(), rent.getId_livro()) != null)
 				throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT,
-						"Este livro já foi alugado");
+						"Este livro jï¿½ foi alugado");
 			Livro livro = livroRepo.findById(rent.getId_livro()).get();
 
 			if (livro.getQtde() > 0) {
@@ -272,7 +272,7 @@ public class ManagerController {
 				rentRepo.save(rent);
 				livroRepo.save(livro);
 
-				return new HttpReturn(HttpReturn.OK, HttpStatus.OK, "Alteração com Sucesso");
+				return new HttpReturn(HttpReturn.OK, HttpStatus.OK, "Alteraï¿½ï¿½o com Sucesso");
 			} else {
 				throw new HttpReturnException(HttpReturnException.CONFLICT, HttpStatus.CONFLICT,
 						"Quantidades do livro esgotadas");
